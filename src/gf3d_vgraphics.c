@@ -150,7 +150,7 @@ void gf3d_vgraphics_init(const char *config)
     
     gfc_matrix4_perspective(
         gf3d_vgraphics.ubo.proj,
-        45 * GFC_DEGTORAD,
+        45 * GFC_DEGTORAD,      //Field of view (FOV)
         resolution.x/resolution.y,
         0.1f,
         100000

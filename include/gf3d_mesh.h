@@ -11,6 +11,7 @@
 #include "gfc_primitives.h"
 
 #include "gf3d_pipeline.h"
+#include "gfc_color.h"
 
 
 //forward declaration:
@@ -24,6 +25,8 @@ typedef struct
     GFC_Matrix4     proj;
     GFC_Vector4D    color;
     GFC_Vector4D    camera;
+    GFC_Vector4D    lightPos;
+    GFC_Vector4D    lightColor;
 }MeshUBO;
 
 typedef struct
@@ -103,6 +106,11 @@ void gf3d_mesh_move_vertices(Mesh *in, GFC_Vector3D offset,GFC_Vector3D rotation
  * @return NULL on error or the primitive
  */
 MeshPrimitive *gf3d_mesh_primitive_new();
+
+
+
+void gf3d_mesh_primitive_free(MeshPrimitive* prim);
+
 
 /**
  * @brief append the primitive mesh data of B to the primitive mesh data of A.
@@ -211,6 +219,16 @@ Pipeline *gf3d_mesh_get_sky_pipeline();
 MeshUBO gf3d_mesh_get_ubo(
     GFC_Matrix4 modelMat,
     GFC_Color colorMod);
+
+/*
+* @brief draw a mesh given the parameters
+* 
+*/
+void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture, GFC_Vector3D lightPos, GFC_Color lightColor);
+
+
+
+
 
 
 #endif
