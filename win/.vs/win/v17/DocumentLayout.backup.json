@@ -3,7 +3,49 @@
   "WorkspaceRootPath": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\win\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\gfc\\src\\gfc_input.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf2d_sprite.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_camera.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\game.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\include\\gf3d_mesh.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_mesh.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_vgraphics.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_pipeline.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\include\\gf3d_pipeline.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\config\\overlay_pipeline.cfg||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\shaders\\model.frag||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\shaders\\model.vert||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\entity.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\notes.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_obj_load.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C1D96CA3-12E4-4DF7-A184-B2F59097536E}|win.vcxproj|C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\gfc\\include\\gfc_primitives.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -13,24 +55,205 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 10,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "notes.c",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\notes.c",
+              "RelativeDocumentMoniker": "..\\src\\notes.c",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\notes.c",
+              "RelativeToolTip": "..\\src\\notes.c",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-09-16T14:43:20.834Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "gf3d_camera.c",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_camera.c",
+              "RelativeDocumentMoniker": "..\\src\\gf3d_camera.c",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_camera.c",
+              "RelativeToolTip": "..\\src\\gf3d_camera.c",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-10-08T18:12:02.493Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "model.frag",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\shaders\\model.frag",
+              "RelativeDocumentMoniker": "..\\shaders\\model.frag",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\shaders\\model.frag",
+              "RelativeToolTip": "..\\shaders\\model.frag",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-10-08T17:54:31.309Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "model.vert",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\shaders\\model.vert",
+              "RelativeDocumentMoniker": "..\\shaders\\model.vert",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\shaders\\model.vert",
+              "RelativeToolTip": "..\\shaders\\model.vert",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACYAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-10-08T17:53:11.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "overlay_pipeline.cfg",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\config\\overlay_pipeline.cfg",
+              "RelativeDocumentMoniker": "..\\config\\overlay_pipeline.cfg",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\config\\overlay_pipeline.cfg",
+              "RelativeToolTip": "..\\config\\overlay_pipeline.cfg",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAACEAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-10-08T17:52:21.197Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "gfc_input.c",
-              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\gfc\\src\\gfc_input.c",
-              "RelativeDocumentMoniker": "..\\gfc\\src\\gfc_input.c",
-              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\gfc\\src\\gfc_input.c",
-              "RelativeToolTip": "..\\gfc\\src\\gfc_input.c",
-              "ViewState": "AgIAAIwBAAAAAAAAAAAAAJ4BAABsAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "game.c",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\game.c",
+              "RelativeDocumentMoniker": "..\\src\\game.c",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\game.c",
+              "RelativeToolTip": "..\\src\\game.c",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAAFYAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
-              "WhenOpened": "2025-09-06T18:15:39.463Z",
+              "WhenOpened": "2025-10-07T14:27:00.831Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "gf3d_mesh.c",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_mesh.c",
+              "RelativeDocumentMoniker": "..\\src\\gf3d_mesh.c",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_mesh.c",
+              "RelativeToolTip": "..\\src\\gf3d_mesh.c",
+              "ViewState": "AgIAAEYBAAAAAAAAAAAjwE4BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-10-08T04:43:51.639Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "gf3d_mesh.h",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\include\\gf3d_mesh.h",
+              "RelativeDocumentMoniker": "..\\include\\gf3d_mesh.h",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\include\\gf3d_mesh.h",
+              "RelativeToolTip": "..\\include\\gf3d_mesh.h",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAAAG4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-10-08T17:16:17.087Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "gf3d_vgraphics.c",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_vgraphics.c",
+              "RelativeDocumentMoniker": "..\\src\\gf3d_vgraphics.c",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_vgraphics.c",
+              "RelativeToolTip": "..\\src\\gf3d_vgraphics.c",
+              "ViewState": "AgIAACQCAAAAAAAAAAAjwPkBAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-10-08T04:45:46.755Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "gf2d_sprite.c",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf2d_sprite.c",
+              "RelativeDocumentMoniker": "..\\src\\gf2d_sprite.c",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf2d_sprite.c",
+              "RelativeToolTip": "..\\src\\gf2d_sprite.c",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-10-08T04:49:19.088Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "gf3d_pipeline.h",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\include\\gf3d_pipeline.h",
+              "RelativeDocumentMoniker": "..\\include\\gf3d_pipeline.h",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\include\\gf3d_pipeline.h",
+              "RelativeToolTip": "..\\include\\gf3d_pipeline.h",
+              "ViewState": "AgIAAIMAAAAAAAAAAAAAAFoAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-10-08T04:49:20.415Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "gf3d_pipeline.c",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_pipeline.c",
+              "RelativeDocumentMoniker": "..\\src\\gf3d_pipeline.c",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_pipeline.c",
+              "RelativeToolTip": "..\\src\\gf3d_pipeline.c",
+              "ViewState": "AgIAAOwCAAAAAAAAAAAjwPoCAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-10-07T16:17:21.647Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "entity.c",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\entity.c",
+              "RelativeDocumentMoniker": "..\\src\\entity.c",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\entity.c",
+              "RelativeToolTip": "..\\src\\entity.c",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-10-08T05:08:26.472Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "gf3d_obj_load.c",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_obj_load.c",
+              "RelativeDocumentMoniker": "..\\src\\gf3d_obj_load.c",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\src\\gf3d_obj_load.c",
+              "RelativeToolTip": "..\\src\\gf3d_obj_load.c",
+              "ViewState": "AgIAAJ4AAAAAAAAAAAAlwKIAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-10-08T04:43:51.032Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "gfc_primitives.h",
+              "DocumentMoniker": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\gfc\\include\\gfc_primitives.h",
+              "RelativeDocumentMoniker": "..\\gfc\\include\\gfc_primitives.h",
+              "ToolTip": "C:\\Users\\mrbar\\Git Folders\\gameframework3D\\gf3d\\gfc\\include\\gfc_primitives.h",
+              "RelativeToolTip": "..\\gfc\\include\\gfc_primitives.h",
+              "ViewState": "AgIAAK4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-09-29T17:37:07.248Z"
             }
           ]
         }

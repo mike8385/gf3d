@@ -13,6 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="models">
+      <UniqueIdentifier>{27c356c5-349e-469b-8ed4-2bcdb91efba1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="images">
+      <UniqueIdentifier>{272fca3d-7caa-47e4-9bac-7e3cbd9f09d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="images\ui">
+      <UniqueIdentifier>{f18ef8a4-e005-4e13-9a07-e1ce3fff6335}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models\dino">
+      <UniqueIdentifier>{a5666e75-0100-4a9f-8917-53fabde0f3ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models\primitives">
+      <UniqueIdentifier>{3b7c9403-f9dc-4ad5-98ab-c2df229a0df3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models\sky">
+      <UniqueIdentifier>{4e462c5c-c451-49cb-9e82-fe7a46a58197}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{cb52eac6-d411-4141-a05d-8022f18bc547}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{a25c2359-2ed5-4396-a097-be1934c92e6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\game.c">
@@ -163,6 +187,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gfc\simple_logger\src\simple_logger.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\notes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gf3d_mesh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gf3d_camera.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\entity.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -326,5 +362,147 @@
     <ClInclude Include="..\gfc\simple_logger\include\simple_logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\images\bg_flat.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="..\images\cube.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="..\images\default.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="..\images\defaultNormalMap.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="..\images\flare.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="..\images\metal_normal_map.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="..\images\testworld.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="..\images\untitled.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="..\images\ui\arrow_button.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\images\ui\arrow_buttons_up.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\images\ui\button.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\images\ui\com_button.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\images\ui\gem_button.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\images\ui\healthbar.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\images\ui\pointer.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\images\ui\title_screen.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\images\ui\window_background.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\images\ui\window_border.png">
+      <Filter>images\ui</Filter>
+    </Image>
+    <Image Include="..\models\dino\dino.png">
+      <Filter>models\dino</Filter>
+    </Image>
+    <Image Include="..\models\primitives\flatwhite.png">
+      <Filter>models\primitives</Filter>
+    </Image>
+    <Image Include="..\models\sky\sky.png">
+      <Filter>models\sky</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\images\default.xcf">
+      <Filter>images</Filter>
+    </None>
+    <None Include="..\images\ui\com_button.xcf">
+      <Filter>images\ui</Filter>
+    </None>
+    <None Include="..\images\ui\window_border.xcf">
+      <Filter>images\ui</Filter>
+    </None>
+    <None Include="..\models\dino\dino_skin.blend">
+      <Filter>models\dino</Filter>
+    </None>
+    <None Include="..\models\primitives\flatwhite.xcf">
+      <Filter>models\primitives</Filter>
+    </None>
+    <None Include="..\models\sky\sky.blend">
+      <Filter>models\sky</Filter>
+    </None>
+    <None Include="..\models\sky\sky.blend1">
+      <Filter>models\sky</Filter>
+    </None>
+    <None Include="..\models\sky\sky.xcf">
+      <Filter>models\sky</Filter>
+    </None>
+    <None Include="..\models\dino.model">
+      <Filter>models</Filter>
+    </None>
+    <None Include="..\models\sky.model">
+      <Filter>models</Filter>
+    </None>
+    <None Include="..\models\susanne.json">
+      <Filter>models</Filter>
+    </None>
+    <None Include="..\shaders\model.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\model.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\sprite.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\sprite.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\sprite_frag.spv">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\sprite_vert.spv">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\config\audio.cfg">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\config\font.cfg">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\config\input.cfg">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\config\model_pipeline.cfg">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\config\overlay_pipeline.cfg">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\config\setup.cfg">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\config\sky_pipeline.cfg">
+      <Filter>config</Filter>
+    </None>
   </ItemGroup>
 </Project>

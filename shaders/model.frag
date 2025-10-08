@@ -16,15 +16,15 @@ layout(location = 0) out vec4 outColor;
 
 void main()
 {
-    vec3 lightDir = normalize(worldPosition.xyz - lightPos.xyz);
+    //vec3 lightDir = normalize(worldPosition.xyz - lightPos.xyz);
 
     vec4 texColor = texture(texSampler, fragTexCoord);
     texColor.w = 1.0;  //Remove this after I get augomon to work
 
-    texColor.xyz = dot(inNormal, -lightDir) * texColor.xyz;
+    //texColor.xyz = dot(inNormal, -lightDir) * texColor.xyz;
 
 
 
 
-    outColor = texColor * colorMod; //Ultimately what we want to send out
+    outColor = texColor; //Ultimately what we want to send out
 }
