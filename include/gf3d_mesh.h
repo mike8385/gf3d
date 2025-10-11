@@ -12,6 +12,7 @@
 
 #include "gf3d_pipeline.h"
 #include "gfc_color.h"
+#include "gf3d_buffers.h"
 
 
 //forward declaration:
@@ -154,6 +155,11 @@ void gf3d_mesh_delete(Mesh* mesh);
  */
 void gf3d_mesh_primitive_create_vertex_buffer(MeshPrimitive *primitive);
 
+/**
+ * @brief create a mesh's internal buffers based on faces
+ * @param primitive the mesh primitive to populate
+ * @note the primitive must have the objData set and it must have be organizes in buffer order
+ */
 void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* primitive);
 
 void gf3d_mesh_move_vertices(Mesh* in, GFC_Vector3D offset, GFC_Vector3D rotation);

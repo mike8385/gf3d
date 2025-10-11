@@ -6,7 +6,7 @@
 #include "gf3d_obj_load.h"
 #include "gfc_color.h"
 #include "gf3d_camera.h"
-#include "gf3d_buffers.h"
+
 
 
 #include "gf3d_mesh.h"
@@ -23,6 +23,8 @@ typedef struct
     Uint32                                  chain_length;     /**<length of swap chain*/
     VkDevice                                device;           /**<logical vulkan device*/
     Pipeline*                               pipe;             /**<the pipeline associated with mesh rendering*/
+    VkBuffer                                faceBuffer;
+    VkDeviceMemory                          faceBufferMemory;
     VkVertexInputAttributeDescription       attributeDescriptions[MESH_ATTRIBUTE_COUNT];
     VkVertexInputBindingDescription         bindingDescription;
     float                                   drawOrder;
@@ -148,15 +150,13 @@ Mesh* gf3d_mesh_load_obj(const char* filename)
     ObjData* obj;
 
     if (!filename) return NULL;
-    mesh = gf3d_mesh_get_by_filename(filename);
-    if (mesh)
-    {
-        mesh->_refCount++;  //If mesh currently exists, grab it and end call
-        return mesh;
-    }
-    slog("Before OBJ load from file");
+    //mesh = gf3d_mesh_get_by_filename(filename);
+    //if (mesh)
+    //{
+    //    mesh->_refCount++;  //If mesh currently exists, grab it and end call
+    //    return mesh;
+    //}
     obj = gf3d_obj_load_from_file(filename); //Parse data from file
-    slog("After OBJ Load from file");
     if (!obj)
     {
         slog("Failed to parse obj file %s", filename);
@@ -169,10 +169,8 @@ Mesh* gf3d_mesh_load_obj(const char* filename)
         slog("Failed to make new mesh");
         return NULL;
     }
-    slog("Made it here1");
 
     primitive = gf3d_mesh_primitive_new();
-    slog("Made it here2");
 
     if (!primitive)
     {
@@ -223,12 +221,12 @@ VkVertexInputAttributeDescription* gf3d_mesh_get_attribute_descriptions(Uint32* 
 {
     mesh_manager.attributeDescriptions[0].binding = 0;
     mesh_manager.attributeDescriptions[0].location = 0;
-    mesh_manager.attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+    mesh_manager.attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
     mesh_manager.attributeDescriptions[0].offset = offsetof(Vertex, vertex);
 
     mesh_manager.attributeDescriptions[1].binding = 0;
     mesh_manager.attributeDescriptions[1].location = 1;
-    mesh_manager.attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+    mesh_manager.attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
     mesh_manager.attributeDescriptions[1].offset = offsetof(Vertex, normal);
 
     mesh_manager.attributeDescriptions[2].binding = 0;
@@ -330,10 +328,11 @@ void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* prim)
 
     gf3d_buffer_copy(stagingBuffer, prim->faceBuffer, bufferSize);
 
+    prim->faceCount = fcount;
+
     vkDestroyBuffer(device, stagingBuffer, NULL);
     vkFreeMemory(device, stagingBufferMemory, NULL);
 
-    prim->faceCount = fcount;
 }
 
 
@@ -374,7 +373,7 @@ void gf3d_mesh_primitive_queue_render(MeshPrimitive* prim, Pipeline* pipe, void*
 void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture, GFC_Vector3D lightPos, GFC_Color lightColor)
 {
     MeshUBO ubo = { 0 };
-    
+    //slog("In draw");
     if (!mesh) return;
     gfc_matrix4_copy(ubo.model, modelMat);
     gf3d_vgraphics_get_view(&ubo.view);

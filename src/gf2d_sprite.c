@@ -140,7 +140,7 @@ void gf2d_sprite_manager_init(Uint32 max_sprites)
     vkFreeMemory(gf2d_sprite.device, stagingBufferMemory, NULL);
 
     gf2d_sprite_get_attribute_descriptions(&count);
-    gf2d_sprite.pipe = 
+    gf2d_sprite.pipe = gf3d_pipeline_create_from_config
 (
         gf3d_vgraphics_get_default_logical_device(),
         "config/overlay_pipeline.cfg",
