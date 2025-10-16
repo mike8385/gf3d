@@ -32,6 +32,14 @@ typedef struct
 
 typedef struct
 {
+    GFC_Matrix4     model;
+    GFC_Matrix4     view;
+    GFC_Matrix4     proj;
+    GFC_Vector4D    color;
+}SkyUBO;
+
+typedef struct
+{
     GFC_Vector3D vertex;
     GFC_Vector3D normal;
     GFC_Vector2D texel;
@@ -169,6 +177,12 @@ void gf3d_mesh_move_vertices(Mesh* in, GFC_Vector3D offset, GFC_Vector3D rotatio
  * @return NULL on error or the pipeline in question
  */
 Pipeline *gf3d_mesh_get_pipeline();
+
+/**
+ * @brief Draw the skybox based on the model provided
+ * 
+ */
+void gf3d_mesh_sky_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture);
 
 
 /**

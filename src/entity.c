@@ -2,7 +2,7 @@
 
 #include "entity.h"
 #include "gf3d_mesh.h"
-
+#include "gfc_vector.h"
 
 typedef struct 
 {
@@ -130,7 +130,17 @@ void entity_system_think_all()
 }
 
 
-void entity_system_update_all();
+void entity_system_update_all()
+{
+	int i;
+	for (i = 0; i < entity_system.entity_max; i++)
+	{
+		if (entity_system.entity_list[i]._inuse)
+		{
+			entity_update(&entity_system.entity_list[i]);
+		}
+	}
+}
 
 void entity_update(Entity* ent)
 {
@@ -140,4 +150,35 @@ void entity_update(Entity* ent)
 	//	gfc_vector3d_add(ent->position, ent->)
 	//}
 	if (ent->think) ent->think(ent);
+}
+
+
+void entity_system_move_all()
+{
+	int i;
+	for (i = 0; i < entity_system.entity_max; i++)
+	{
+		if (entity_system.entity_list[i]._inuse)
+		{
+			entity_move(&entity_system.entity_list[i]);
+		}
+	}
+}
+
+
+void entity_move(Entity* self)
+{
+	if (!self) return;
+
+	if (self->move) self->move(self);
+
+	gfc_vector3d_add(self->velocity, self->velocity, self->acceleration);
+
+	gfc_vector3d_add(self->position, self->position, self->velocity);
+}
+
+
+void entity_get_floor_pos(Entity* ent, World* world, GFC_Vector)
+{
+
 }

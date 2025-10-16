@@ -5,6 +5,7 @@
 #include "gfc_matrix.h"
 
 #include "gf3d_mesh.h"
+#include "world.h"
 //Include vector, maatrix, 
 
 
@@ -21,12 +22,15 @@ typedef struct Entity_S
 	GFC_Vector3D					rotation;
 	GFC_Vector3D					scale;
 	GFC_Vector3D					velocity;
+	GFC_Vector3D					acceleration;
+
 
 	//GFC_Primitive					collision; 	//Primitives are shapes in 3D; this is NOT the same as a mesh primitive
 	GFC_Box							bounds;
 	void							(*draw)(struct Entity_S *self);
 	void							(*think)(struct Entity_S* self);
 	void							(*update)(struct Entity_S* self);
+	void							(*move)(struct Entity_S* self);
 	Uint8							doGenericUpdate;
 }Entity;
 
@@ -61,5 +65,16 @@ void entity_system_draw_all(GFC_Vector3D lightPos, GFC_Color lightColor);
 void entity_system_think_all();
 
 void entity_system_update_all();
+
+void entity_think(Entity* ent);
+
+void entity_update(Entity* ent);
+
+void entity_system_move_all();
+
+void entity_move();
+
+void entity_get_floor_pos(Entity* ent, World* world);
+
 
 #endif

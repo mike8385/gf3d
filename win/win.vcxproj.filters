@@ -201,6 +201,12 @@
     <ClCompile Include="..\src\entity.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="monster.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\player.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\gf2d_actor.h">
@@ -365,6 +371,12 @@
     <ClInclude Include="..\include\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\monster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\images\bg_flat.png">
@@ -503,6 +515,12 @@
     </None>
     <None Include="..\config\sky_pipeline.cfg">
       <Filter>config</Filter>
+    </None>
+    <None Include="..\shaders\sky.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\sky.vert">
+      <Filter>shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

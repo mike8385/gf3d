@@ -23,6 +23,7 @@
 #include "gf3d_mesh.h"
 #include "entity.h"
 #include "monster.h"
+#include "world.h"
 
 #include "gf3d_camera.h"
 
@@ -44,13 +45,17 @@ void exitGame()
 int main(int argc,char *argv[])
 {
     //local variables
+    World* world;
     Sprite *bg;
     Mesh* mesh;
     Texture* texture;
+    Entity* monster;
+    Entity* player;
     float theta = 0;
     GFC_Vector3D lightPos = { 5,5,20 };
     GFC_Vector3D cam = { 0,50,0 };
     GFC_Matrix4 id, dinoM;
+    GFC_Matrix4 modelMat;
     //initializtion    
     parse_arguments(argc,argv);
     init_logger("gf3d.log",0); //1 wont delete log file at end
@@ -74,10 +79,15 @@ int main(int argc,char *argv[])
 
     // main game loop    
 
-
+    gfc_matrix4_identity(modelMat);
     gfc_matrix4_identity(id);
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
-    monster_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_WHITE);
+    mesh = gf3d_mesh_load_obj("models/sky/sky.obj");
+  
+    texture = gf3d_texture_load("models/sky/sky.png");
+    monster = monster_spawn(gfc_vector3d(5, 0, 0), GFC_COLOR_WHITE);
+    player = player_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_WHITE);
+    world = world_load(filename);
     while(!_done)
     {
         gfc_input_update();
@@ -86,11 +96,14 @@ int main(int argc,char *argv[])
         theta += .1;
         gfc_matrix4_rotate_z(dinoM, id, theta);
         entity_system_think_all();
+        entity_system_update_all();
+        entity_system_move_all();
         //camera updates
         gf3d_camera_update_view();
         gf3d_vgraphics_render_start();
                 //3D draws
-        //Change to draw all(lightPos, GFC_COLOR_LIGHT_CYAN
+                gf3d_mesh_sky_draw(mesh, modelMat, GFC_COLOR_WHITE, texture);
+                world_draw(world);
                 entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
                 //2D draws
                // gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));

@@ -23,6 +23,7 @@ typedef struct
     Uint32                                  chain_length;     /**<length of swap chain*/
     VkDevice                                device;           /**<logical vulkan device*/
     Pipeline*                               pipe;             /**<the pipeline associated with mesh rendering*/
+    Pipeline*                               sky_pipe;
     VkBuffer                                faceBuffer;
     VkDeviceMemory                          faceBufferMemory;
     VkVertexInputAttributeDescription       attributeDescriptions[MESH_ATTRIBUTE_COUNT];
@@ -69,6 +70,18 @@ void gf3d_mesh_init(Uint32 mesh_max)
 
 
     gf3d_mesh_get_attribute_descriptions(&count);
+    mesh_manager.sky_pipe = gf3d_pipeline_create_from_config(
+        gf3d_vgraphics_get_default_logical_device(),
+        "config/sky_pipeline.cfg",
+        gf3d_vgraphics_get_view_extent(),
+        mesh_max,
+        gf3d_mesh_get_bind_description(),
+        gf3d_mesh_get_attribute_descriptions(NULL),
+        count,
+        sizeof(SkyUBO),
+        VK_INDEX_TYPE_UINT16
+    );
+
     mesh_manager.pipe = gf3d_pipeline_create_from_config(
         gf3d_vgraphics_get_default_logical_device(),
         "config/model_pipeline.cfg",
@@ -377,6 +390,8 @@ void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* te
     if (!mesh) return;
     gfc_matrix4_copy(ubo.model, modelMat);
     gf3d_vgraphics_get_view(&ubo.view);
+
+
     gf3d_vgraphics_get_projection_matrix(&ubo.proj);
 
     ubo.color = gfc_color_to_vector4f(mod);
@@ -388,6 +403,28 @@ void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* te
 
 
     gf3d_mesh_queue_render(mesh, mesh_manager.pipe, &ubo, texture);
+}
+
+void gf3d_mesh_sky_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture)
+{
+    SkyUBO ubo = { 0 };
+    //slog("In draw");
+    if (!mesh) return;
+    gfc_matrix4_copy(ubo.model, modelMat);
+    gf3d_vgraphics_get_view(&ubo.view);
+
+    ubo.view[0][3] = 0;
+    ubo.view[1][3] = 0;
+    ubo.view[2][3] = 0;
+    ubo.view[3][0] = 0;
+    ubo.view[3][1] = 0;
+    ubo.view[3][2] = 0;
+
+    gf3d_vgraphics_get_projection_matrix(&ubo.proj);
+
+    ubo.color = gfc_color_to_vector4f(mod);
+
+    gf3d_mesh_queue_render(mesh, mesh_manager.sky_pipe, &ubo, texture);
 }
 
 Pipeline* gf3d_mesh_get_pipeline()

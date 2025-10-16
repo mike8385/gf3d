@@ -2,6 +2,7 @@
 
 #include "monster.h"
 
+
 Entity* monster_spawn(GFC_Vector3D position, GFC_Color color)
 {
 	Entity* self;
@@ -14,15 +15,21 @@ Entity* monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->position = position;
 	self->think = monster_think;
 	self->rotation.z = 180;
+	self->velocity.x = 0;
 	//self->velocity.z = gfc_crandom();
 	slog("Made it here");
 	return self;
 }
 
 
-
 void monster_think(Entity* self)
 {
 	if (!self) return;
-	
+	monster_move(self);
+
+}
+
+void monster_move(Entity* self)
+{
+
 }
