@@ -21,7 +21,7 @@ Entity* monster_spawn(GFC_Vector3D position, GFC_Color color)
 	return self;
 }
 
-
+ 
 void monster_think(Entity* self)
 {
 	if (!self) return;
