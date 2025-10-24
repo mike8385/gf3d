@@ -1,0 +1,6 @@
+# Treat OBJ files as binary (no line ending conversion)
+*.obj binary
+
+# Optional: force other text files to LF
+*.c text eol=lf
+*.h text eol=lf

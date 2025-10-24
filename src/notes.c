@@ -13,11 +13,6 @@ Pipelines: Specific Dataflow through the system
 
 
 
-
-
-
-
-
 Rendering Pipeline Notes:
 	-Descriptor set: UBO, Index buffer, Face buffer, and textures and binding locations
 
@@ -96,7 +91,7 @@ Blender:
 	--Used gimp, made a new layer named texture, and export it as a skin
 
 
-
+u
 
 
 
@@ -124,9 +119,9 @@ Collision: Walkable terrain
 	--name it walk mask
 	
 Dot/Cross Product:
-	--Dot Product answers question how similar are two vectors
+	--Dot Product answers question how similar are two vectors (Scaler respionse)
 	--Normalize
-	Cross Product: What p
+	Cross Product: Perpindicual vector between two vectors  (New vector)
 
 	--Math for collision is plane detection
 
@@ -137,6 +132,70 @@ Edge test
 
 
 
+More precise the collision test, more math is involved
+	-Do simple first, then get more complex\
+	-Ask permission not forgivness
 
 
+
+
+Matricies:
+
+3D is a 4x4 matrix
+2D is a 3x3 matrix
+
+
+
+Quaternion:
+X,Y,Z direction and how much your rotating about it
+
+
+
+
+
+
+
+
+
+
+*/
+
+/* 
+Monster C
+#include "simple_logger.h"
+
+#include "monster.h"
+
+
+Entity* monster_spawn(GFC_Vector3D position, GFC_Color color)
+{
+	Entity* self;
+	self = entity_new();
+	if (!self) return NULL;
+	gfc_line_cpy(self->name, "notAugmon");
+	self->mesh = gf3d_mesh_load_obj("models/dino/dino.obj");
+	self->texture = gf3d_texture_load("models/dino/dino.png");
+	self->color = color;
+	self->position = position;
+	self->think = monster_think;
+	self->rotation.z = 180;
+	self->velocity.x = 0;
+	//self->velocity.z = gfc_crandom();
+	slog("Made it here");
+	return self;
+}
+
+
+void monster_think(Entity* self)
+{
+	if (!self) return;
+	monster_move(self);
+
+
+}
+
+void monster_move(Entity* self)
+{
+
+}
 */

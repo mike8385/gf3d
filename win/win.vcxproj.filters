@@ -37,6 +37,12 @@
     <Filter Include="config">
       <UniqueIdentifier>{a25c2359-2ed5-4396-a097-be1934c92e6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="def">
+      <UniqueIdentifier>{0b19ad96-b5c1-40d6-8a26-3251023b4a89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models\terrain">
+      <UniqueIdentifier>{9e22e69b-50bc-4cfe-92b6-e0055a3bef31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\game.c">
@@ -201,10 +207,19 @@
     <ClCompile Include="..\src\entity.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="monster.c">
+    <ClCompile Include="..\src\player.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\player.c">
+    <ClCompile Include="..\src\world.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\camera_entity.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\online.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\monster.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -377,6 +392,15 @@
     <ClInclude Include="..\include\player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\world.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\camera_entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\online.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\images\bg_flat.png">
@@ -441,6 +465,15 @@
     </Image>
     <Image Include="..\models\sky\sky.png">
       <Filter>models\sky</Filter>
+    </Image>
+    <Image Include="..\models\terrain\cityTerrain.png">
+      <Filter>models\terrain</Filter>
+    </Image>
+    <Image Include="..\models\terrain\cityTerrain_skin.png">
+      <Filter>models\terrain</Filter>
+    </Image>
+    <Image Include="..\models\terrain\testTerrain.png">
+      <Filter>models\terrain</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -521,6 +554,12 @@
     </None>
     <None Include="..\shaders\sky.vert">
       <Filter>shaders</Filter>
+    </None>
+    <None Include="..\models\terrain\cityTerrain_skin.xcf">
+      <Filter>models\terrain</Filter>
+    </None>
+    <None Include="..\def\cityTerrain.json">
+      <Filter>def</Filter>
     </None>
   </ItemGroup>
 </Project>

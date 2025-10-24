@@ -16,11 +16,14 @@ layout(location = 0) out vec4 outColor;
 
 void main()
 {
-    //vec3 lightDir = normalize(worldPosition.xyz - lightPos.xyz);
+    vec3 lightDir = normalize(worldPosition.xyz - lightPos.xyz);
 
     vec4 texColor = texture(texSampler, fragTexCoord);
 
-    //texColor.xyz = dot(inNormal, -lightDir) * texColor.xyz;
+    texColor.xyz = max(0, dot(inNormal, -lightDir)) * texColor.xyz;
+
+    //Brightness variable and distance
+    // Brightness/distance
 
 
 

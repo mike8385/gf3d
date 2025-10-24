@@ -12,6 +12,8 @@ typedef struct
 
 static EntitySystem entity_system = { 0 };
 
+#define DAMPEN 0.8
+
 Entity* entity_new()
 {
 	int i;
@@ -34,6 +36,7 @@ Entity* entity_new()
 void entity_free(Entity* ent)
 {
 	if (!ent) return;
+	if (ent->free)ent->free(ent);
 	gf3d_mesh_free(ent->mesh);
 	gf3d_texture_free(ent->texture);
 	memset(ent, 0, sizeof(Entity));
@@ -76,15 +79,40 @@ void entity_system_init(Uint32 max_ents)
 	slog("Entity system initialized");
 }
 
+void entity_draw_shadow(Entity* ent)
+{
+	GFC_Vector3D drawPos;
+	GFC_Matrix4 modelMat;
+
+	if ((!ent) || (!ent->drawShadow)) return;
+	gfc_vector3d_copy(drawPos, ent->position);
+	drawPos.z += 0.1;
+	gfc_matrix4_from_vectors(
+		modelMat,
+		drawPos,
+		ent->rotation,
+		gfc_vector3d(ent->scale.x, ent->scale.y, 0.01));
+	gf3d_mesh_draw(
+		ent->mesh,
+		modelMat,
+		gfc_color8(0, 0, 0, 128),
+		ent->texture,
+		gfc_vector3d(0,0,0),
+		gfc_color8(0,0,0,0)
+	);
+}
+
 
 
 void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color lightColor)
 {
+	GFC_Vector3D drawPos;
 	GFC_Matrix4 modelMat;
+	gfc_vector3d_add(drawPos, ent->drawOffset, ent->position);
 	if (!ent) return;
 	gfc_matrix4_from_vectors(
 		modelMat,
-		ent->position,
+		drawPos,
 		ent->rotation,
 		ent->scale);
 	gf3d_mesh_draw(
@@ -95,6 +123,7 @@ void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color lightColor)
 		lightPos,
 		lightColor
 	);
+	entity_draw_shadow(ent);
 }
 
 void entity_system_draw_all(GFC_Vector3D lightPos, GFC_Color lightColor)
@@ -145,10 +174,15 @@ void entity_system_update_all()
 void entity_update(Entity* ent)
 {
 	if (!ent) return;
-	//if (ent->doGenericUpdate)
-	//{
-	//	gfc_vector3d_add(ent->position, ent->)
-	//}
+	if (ent->doGenericUpdate)
+	{
+		gfc_vector3d_add(ent->position, ent->position, ent->velocity);
+		gfc_vector3d_scale(ent->velocity, ent->velocity, DAMPEN);
+		if (gfc_vector3d_magnitude_squared(ent->velocity) < 0.01)
+		{
+			ent->velocity = gfc_vector3d(0,0,0);
+		}
+	}
 	if (ent->think) ent->think(ent);
 }
 
@@ -175,10 +209,13 @@ void entity_move(Entity* self)
 	gfc_vector3d_add(self->velocity, self->velocity, self->acceleration);
 
 	gfc_vector3d_add(self->position, self->position, self->velocity);
-}
 
 
-void entity_get_floor_pos(Entity* ent, World* world, GFC_Vector)
-{
 
 }
+
+
+//void entity_get_floor_pos(Entity* ent, World* world, GFC_Vector)
+//{
+//
+//}

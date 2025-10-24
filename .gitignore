@@ -55,4 +55,11 @@ gf3d
 # backup files
 *.blend1
 
+# Visual Studio files
 .vs/
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+ipch/
+

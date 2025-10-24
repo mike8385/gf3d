@@ -1,4 +1,5 @@
-#include <SDL.h>    //Precompiled        
+#include <SDL.h>    //Precompiled     
+#include <SDL_net.h>
 
 #include "simple_json.h"
 #include "simple_logger.h"
@@ -24,7 +25,9 @@
 #include "entity.h"
 #include "monster.h"
 #include "world.h"
+#include "player.h"
 
+#include "camera_entity.h"
 #include "gf3d_camera.h"
 
 extern int __DEBUG;
@@ -43,8 +46,9 @@ void exitGame()
 
 
 int main(int argc,char *argv[])
-{
+{     
     //local variables
+    Entity* entityCam;
     World* world;
     Sprite *bg;
     Mesh* mesh;
@@ -53,7 +57,7 @@ int main(int argc,char *argv[])
     Entity* player;
     float theta = 0;
     GFC_Vector3D lightPos = { 5,5,20 };
-    GFC_Vector3D cam = { 0,50,0 };
+    GFC_Vector3D cam = { 0,75,25 };
     GFC_Matrix4 id, dinoM;
     GFC_Matrix4 modelMat;
     //initializtion    
@@ -81,25 +85,34 @@ int main(int argc,char *argv[])
 
     gfc_matrix4_identity(modelMat);
     gfc_matrix4_identity(id);
-    gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
+    //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     mesh = gf3d_mesh_load_obj("models/sky/sky.obj");
-  
+    slog("%f, %f, %f", gf3d_camera_get_position().x, gf3d_camera_get_position().y, gf3d_camera_get_position().z);
     texture = gf3d_texture_load("models/sky/sky.png");
-    monster = monster_spawn(gfc_vector3d(5, 0, 0), GFC_COLOR_WHITE);
-    player = player_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_WHITE);
-    world = world_load(filename);
+    monster = monster_spawn(gfc_vector3d(5, 0, 10), GFC_COLOR_WHITE);
+    player = player_spawn(gfc_vector3d(0, 0, 10), GFC_COLOR_WHITE);
+    world = world_load("def/cityTerrain.json");
+    camera_entity_spawn(cam, player);
+
+
     while(!_done)
     {
         gfc_input_update();
         gf2d_mouse_update();
         gf2d_font_update();
         theta += .1;
+
         gfc_matrix4_rotate_z(dinoM, id, theta);
         entity_system_think_all();
         entity_system_update_all();
         entity_system_move_all();
+        
         //camera updates
         gf3d_camera_update_view();
+        //gf3d_camera_set_position(entityCam->position);
+        //slog("EntityPos: %f, %f, %f", entityCam->position.x, entityCam->position.y, entityCam->position.z);
+        //slog("");
+       // slog("CameraPos: %f, %f, %f", gf3d_camera_get_position().x, gf3d_camera_get_position().y, gf3d_camera_get_position().z);
         gf3d_vgraphics_render_start();
                 //3D draws
                 gf3d_mesh_sky_draw(mesh, modelMat, GFC_COLOR_WHITE, texture);
@@ -116,6 +129,7 @@ int main(int argc,char *argv[])
     vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());    
     //cleanup
     slog("gf3d program end");
+    SDLNet_Quit();
     exit(0);
     slog_sync();
     return 0;

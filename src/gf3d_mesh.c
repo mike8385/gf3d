@@ -401,7 +401,6 @@ void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* te
 
     ubo.camera = gfc_vector3dw(gf3d_camera_get_position(), 1.0);
 
-
     gf3d_mesh_queue_render(mesh, mesh_manager.pipe, &ubo, texture);
 }
 

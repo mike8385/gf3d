@@ -19,10 +19,12 @@ typedef struct Entity_S
 	GFC_Color						color;
 	GFC_Matrix4						matrix;
 	GFC_Vector3D					position;
+	GFC_Vector3D					drawOffset;
 	GFC_Vector3D					rotation;
 	GFC_Vector3D					scale;
 	GFC_Vector3D					velocity;
 	GFC_Vector3D					acceleration;
+	Uint8							drawShadow;
 
 
 	//GFC_Primitive					collision; 	//Primitives are shapes in 3D; this is NOT the same as a mesh primitive
@@ -31,7 +33,10 @@ typedef struct Entity_S
 	void							(*think)(struct Entity_S* self);
 	void							(*update)(struct Entity_S* self);
 	void							(*move)(struct Entity_S* self);
+	void							(*free)(struct Entity_S* self);
 	Uint8							doGenericUpdate;
+	Uint8							isCam;
+	void*							data;
 }Entity;
 
 
@@ -75,6 +80,8 @@ void entity_system_move_all();
 void entity_move();
 
 void entity_get_floor_pos(Entity* ent, World* world);
+
+void entity_draw_shadow(Entity* ent);
 
 
 #endif
