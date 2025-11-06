@@ -3,6 +3,7 @@
 
 #include "gfc_list.h"
 #include "body.h"
+#include "entity.h"
 
 typedef struct {
 
@@ -26,5 +27,8 @@ void space_add_body(Space* space, Body* body);
 
 void space_add_static_body(Space* space, Body* body);
 
+Space* space_load();
+
+int space_step_body(Space* space, Body* a);
 
 #endif

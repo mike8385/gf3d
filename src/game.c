@@ -26,6 +26,7 @@
 #include "monster.h"
 #include "world.h"
 #include "player.h"
+#include "space.h"
 
 #include "camera_entity.h"
 #include "gf3d_camera.h"
@@ -48,14 +49,20 @@ void exitGame()
 int main(int argc,char *argv[])
 {     
     //local variables
-    Entity* entityCam;
-    World* world;
-    Sprite *bg;
     Mesh* mesh;
     Mesh* cube;
     Texture* texture;
     Entity* monster;
     Entity* player;
+
+    //World Variables
+    Entity* entityCam;
+    World* world;
+    Sprite* bg;
+
+    //Space variables
+    Space* space;
+
     float theta = 0;
     GFC_Vector3D lightPos = { 5,5,50 };
     GFC_Vector3D cam = { 0,75,25 };
@@ -101,7 +108,7 @@ int main(int argc,char *argv[])
     GFC_Box box2;
     box2 = gfc_box(0,0,0,10,10,10);
 
-    
+    space = space_load();
 
 
     while(!_done)
@@ -113,9 +120,11 @@ int main(int argc,char *argv[])
 
         gfc_matrix4_rotate_z(dinoM, id, theta);
         entity_system_think_all();
+
+        space_run(space);
         entity_system_update_all();
         entity_system_move_all();
-        entity_check_collisions();//, World* world);
+        //entity_check_collisions();//, World* world);
         //update_space(world)
         
         //camera updates
@@ -128,7 +137,7 @@ int main(int argc,char *argv[])
                 //3D draws
                 gf3d_mesh_sky_draw(mesh, modelMat, GFC_COLOR_WHITE, texture);
                 world_draw(world);
-                gf3d_wire_draw(cube,);
+                //gf3d_wire_draw(cube,);
                 entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
                 //2D draws
                // gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));

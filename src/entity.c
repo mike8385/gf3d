@@ -190,6 +190,8 @@ void entity_update(Entity* ent)
 }
 
 
+
+
 void entity_system_move_all()
 {
 	int i;
@@ -281,15 +283,18 @@ Entity* entity_list_get()
 
 }
 
-void entity_step()
+Uint32* entity_list_get_max()
 {
-
+	EntitySystem* system;
+	system = entity_system.entity_max;
+	if (!system)
+	{
+		slog("Cant get entity list max");
+		return;
+	}
+	return system;
 }
 
-void entity_step_all()
-{
-
-}
 
 
 //void entity_collide(Entity* ent, Entity* other)
@@ -298,3 +303,7 @@ void entity_step_all()
 //
 //	if (ent->collide) ent->collide(ent, other);
 //}
+
+
+
+

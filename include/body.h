@@ -6,7 +6,7 @@
 #include "gfc_text.h"
 #include "gfc_callbacks.h"
 
-
+#include "entity.h"
 
 
 
@@ -15,7 +15,8 @@ typedef struct {
 	float			mass;
 	GFC_Vector3D	position; //Center of mass
 	GFC_Vector3D	velocity; //How fast we are currently moving
-	GFC_List*		volumes;  //Some number of bounding shapes for collisions
+	GFC_Box			bounds;
+	Entity*			entity;
 	GFC_Callback	collide;
 	void			(*onCollide)(struct Body_S* self, struct Body_S* other, void* data);  //Call this on hit
 	void*			data;  //For callback function
@@ -35,7 +36,7 @@ Body* body_new();
 
 Body* body_free(Body* b);
 
-void body_add_volume(Body* b, GFC_Primitive v);
+void body_add_bounds(Body* b, Entity* ent);
 
 void body_set_collision(Body* b, body_collide_func* collide, void* data);
 

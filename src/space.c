@@ -44,27 +44,53 @@ void space_set_iterations(Space* space, Uint32 iterations)
 		return;
 	}
 	space->iterations = iterations;
-	space->step = 1/iterations;
+	space->step = 1.0f / (float)iterations;
+}
+
+//Before i step update all entities in space
+
+int space_step_body(Space* space, Body* a)
+{
+	Body* b;
+	int i, c;
+	c = gfc_list_count(space->bodies);
+	for (i = 0; i < c; i++)
+	{
+		b = gfc_list_nth(space->bodies, i);
+		if (!b) continue;
+
+		if (body_test_body(a, b)) //We hit
+		{
+			slog("Collision happened");
+			return 1;
+		}
+	}
+	return 0;
 }
 
 void space_step(Space* space)
 {
 	Body* b;
 	int i, c;
-	if (!space)return;
+	if (!space) return;
 	c = gfc_list_count(space->bodies);
 	for (i = 0; i < c; i++)
 	{
 		b = gfc_list_nth(space->bodies, i);
 		if (!b) continue;
-		if (body_test_body(space, b)) //We hit
+		gfc_vector3d_add(b->stepPosition, b->stepPosition, b->stepVelocity);
+	}
+	for (i = 0; i < c; i++)
+	{
+		b = gfc_list_nth(space->bodies, i);
+		if (!b) continue;
+		if (space_step_body(space, b)) //We hit
 		{
-			//handle collision
 
 		}
 
-		//gfc_vector3d_add(b->stepPosition, b->stepPosition, b->stepVelocity);
 	}
+
 }
 
 
@@ -85,7 +111,7 @@ void space_run(Space* space)
 }
 
 //Add entities shen you create the space, a copy of each entity
-void space_add_entities(Space* space)
+void space_add_body(Space* space, Body* body)
 {
 	if ((!space)) return;
 	gfc_list_append(space->bodies, body);
@@ -99,14 +125,33 @@ void space_edge_test(Space* space, GFC_Edge3D test, CollisionFilterMask mask);
 
 Space* space_load()
 {
+	int i, c;
 	Entity* ent_list;
+	Body* b;
+	Uint32 ent_max;
 	Space* space;
+	Uint32 iter = 10;
+
 	ent_list = entity_list_get();
+	ent_max = entity_list_get_max();
 	if (!ent_list) return;
+	if (!ent_max) return;
 	space = space_new();
 	if (!space)
 	{
-		slog("Cant initialize space");
+		slog("No space created");
+		return;
+	}
+	space_set_iterations(space, iter);
+	for (i = 0; i < ent_max; i++)
+	{
+		if (!ent_list[i]._inuse) continue;
+		b = body_new();
+		body_add_bounds(b, &ent_list[i]);
+		space_add_body(space, b);
 	}
 
+
+	return space;
 }
+

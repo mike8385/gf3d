@@ -222,6 +222,24 @@
     <ClCompile Include="..\src\monster.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\world_entity.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\space.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\body.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\collision.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gf3d_draw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\particles.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\gf2d_actor.h">
@@ -401,6 +419,24 @@
     <ClInclude Include="..\include\online.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\world_entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\space.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\body.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\collision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\gf3d_draw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\particles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\images\bg_flat.png">
@@ -560,6 +596,24 @@
     </None>
     <None Include="..\def\cityTerrain.json">
       <Filter>def</Filter>
+    </None>
+    <None Include="..\config\particle_pipeline.cfg">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\shaders\particle.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\particle.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\config\wire_pipeline.cfg">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\shaders\wire.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\wire.vert">
+      <Filter>shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -109,4 +109,6 @@ void entity_check_collisions();
 
 Entity* entity_list_get();
 
+Uint32* entity_list_get_max();
+
 #endif
