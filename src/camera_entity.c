@@ -46,7 +46,6 @@ void camera_entity_think(Entity* self) {
 	*/
 	offset = gfc_vector3d(0, 1, 0); //Initalize
 	gfc_vector3d_rotate_about_z(&offset, data->angle); //Rotate vector so it faces left <----
-	//gfc_vector3d_copy(d, data->target->position);
 	gfc_vector3d_scale(offset, offset, data->followDistance); //Make the followDistance work/be same after player moves
 	offset.z = data->followHeight; //Moves the offset z so it follows the players height after movement
 	gfc_vector3d_add(self->position, offset, data->target->position);
@@ -56,20 +55,20 @@ void camera_entity_think(Entity* self) {
 	//Move Camera/Model
 	if (gfc_input_command_down("panright"))
 	{
-		slog("Pressed Right");
+		//slog("Pressed Right");
 
 		data->angle += turn;
 
 	}
 	if (gfc_input_command_down("panleft"))
 	{
-		slog("Pressed Left");
+		//slog("Pressed Left");
 		data->angle -= turn;
 	}
 
 	if (gfc_input_command_down("panup"))
 	{
-		slog("Pressed UP");
+		//slog("Pressed UP");
 
 		data->followHeight += look;
 	}
@@ -78,22 +77,12 @@ void camera_entity_think(Entity* self) {
 		data->followHeight -= look;
 	}
 
-	//if (yaw)
-	//{
-	//	gfc_vector3d_sub(d, data->target->position, self->position); //d is the vector/line that points from the camera to player
-	//	gfc_vector3d_normalize(&d); //Now its a direction arrow, where to go like position wise, points at player
-	//	gfc_vector3d_rotate_about_z(&d, data->angle/*angle*/); //points around player
-	//	gfc_vector3d_rotate_about_z(&data->target->rotation, data->angle/*angle*/); //points around player
-	//	gfc_vector3d_add(self->position, data->target->position, d);
-	//}
-	//slog("%f", data->angle);
 }
 
 
 
 Entity* camera_entity_spawn(GFC_Vector3D position, Entity* target)
 {
-	slog("Inside sapwn");
 	GFC_Vector3D dir;
 	CameraEntityData* data;
 	Entity* self;
@@ -110,6 +99,7 @@ Entity* camera_entity_spawn(GFC_Vector3D position, Entity* target)
 		entity_free(self);
 		return NULL;
 	}
+	self->collidedType = CT_None;
 	data->followHeight = 50;
 	data->followDistance = 100;
 	data->angle = GFC_PI;
@@ -120,7 +110,7 @@ Entity* camera_entity_spawn(GFC_Vector3D position, Entity* target)
 	gfc_vector3d_sub(dir, target->position, position);	//Gets distance from 2 objects
 	gfc_vector3d_normalize(&dir);	//Sets vector to 1, so it knows where to point
 
-	gfc_vector3d_add(target->position, position, dir);
+	//gfc_vector3d_add(target->position, position, dir);
 	data->target = target;
 
 	gf3d_camera_look_at(data->target->position, &self->position);

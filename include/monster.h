@@ -14,5 +14,7 @@ void monster_think(Entity* self);
 
 void monster_move(Entity* self);
 
+void monster_update(Entity* self);
+
 #endif
 #pragma once

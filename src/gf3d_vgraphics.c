@@ -202,6 +202,7 @@ void gf3d_vgraphics_init(const char *config)
 
     gf3d_vgraphics.enable_2d = 1;
     gf3d_mesh_init(1024);
+    //particle
     gf2d_sprite_manager_init(1024);
     
     renderPipe = gf3d_mesh_get_pipeline();

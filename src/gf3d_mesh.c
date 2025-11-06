@@ -24,6 +24,7 @@ typedef struct
     VkDevice                                device;           /**<logical vulkan device*/
     Pipeline*                               pipe;             /**<the pipeline associated with mesh rendering*/
     Pipeline*                               sky_pipe;
+    Pipeline*                               wire_pipe;
     VkBuffer                                faceBuffer;
     VkDeviceMemory                          faceBufferMemory;
     VkVertexInputAttributeDescription       attributeDescriptions[MESH_ATTRIBUTE_COUNT];
@@ -91,6 +92,17 @@ void gf3d_mesh_init(Uint32 mesh_max)
         gf3d_mesh_get_attribute_descriptions(NULL),
         count,
         sizeof(MeshUBO),
+        VK_INDEX_TYPE_UINT16
+    );
+    mesh_manager.wire_pipe = gf3d_pipeline_create_from_config(
+        gf3d_vgraphics_get_default_logical_device(),
+        "config/wire_pipeline.cfg",
+        gf3d_vgraphics_get_view_extent(),
+        mesh_max,
+        gf3d_mesh_get_bind_description(),
+        gf3d_mesh_get_attribute_descriptions(NULL),
+        count,
+        sizeof(WireUBO),
         VK_INDEX_TYPE_UINT16
     );
 
@@ -426,7 +438,28 @@ void gf3d_mesh_sky_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture
     gf3d_mesh_queue_render(mesh, mesh_manager.sky_pipe, &ubo, texture);
 }
 
+void gf3d_wire_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture)
+{
+    WireUBO ubo = { 0 };
+    //slog("In draw");
+    if (!mesh) return;
+    gfc_matrix4_copy(ubo.model, modelMat);
+    gf3d_vgraphics_get_view(&ubo.view);
+
+
+    gf3d_vgraphics_get_projection_matrix(&ubo.proj);
+
+    ubo.color = gfc_color_to_vector4f(mod);
+    
+
+    gf3d_mesh_queue_render(mesh, mesh_manager.wire_pipe, &ubo, texture);
+}
+
+
 Pipeline* gf3d_mesh_get_pipeline()
 {
     return mesh_manager.pipe;
 }
+
+
+

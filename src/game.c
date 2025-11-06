@@ -52,14 +52,17 @@ int main(int argc,char *argv[])
     World* world;
     Sprite *bg;
     Mesh* mesh;
+    Mesh* cube;
     Texture* texture;
     Entity* monster;
     Entity* player;
     float theta = 0;
-    GFC_Vector3D lightPos = { 5,5,20 };
+    GFC_Vector3D lightPos = { 5,5,50 };
     GFC_Vector3D cam = { 0,75,25 };
     GFC_Matrix4 id, dinoM;
     GFC_Matrix4 modelMat;
+    GFC_Matrix4 modelMatCube;
+
     //initializtion    
     parse_arguments(argc,argv);
     init_logger("gf3d.log",0); //1 wont delete log file at end
@@ -87,12 +90,18 @@ int main(int argc,char *argv[])
     gfc_matrix4_identity(id);
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     mesh = gf3d_mesh_load_obj("models/sky/sky.obj");
-    slog("%f, %f, %f", gf3d_camera_get_position().x, gf3d_camera_get_position().y, gf3d_camera_get_position().z);
+    //slog("%f, %f, %f", gf3d_camera_get_position().x, gf3d_camera_get_position().y, gf3d_camera_get_position().z);
     texture = gf3d_texture_load("models/sky/sky.png");
-    monster = monster_spawn(gfc_vector3d(5, 0, 10), GFC_COLOR_WHITE);
-    player = player_spawn(gfc_vector3d(0, 0, 10), GFC_COLOR_WHITE);
     world = world_load("def/cityTerrain.json");
+    monster = monster_spawn(gfc_vector3d(5, -15, 10), GFC_COLOR_WHITE);
+    player = player_spawn(gfc_vector3d(0, 0, 10), GFC_COLOR_PINK);
+    //world_entity_building_spawn(gfc_vector3d(50, 50, 0), GFC_COLOR_RED);
+    cube = gf3d_mesh_load_obj("models/box.obj");
     camera_entity_spawn(cam, player);
+    GFC_Box box2;
+    box2 = gfc_box(0,0,0,10,10,10);
+
+    
 
 
     while(!_done)
@@ -106,6 +115,8 @@ int main(int argc,char *argv[])
         entity_system_think_all();
         entity_system_update_all();
         entity_system_move_all();
+        entity_check_collisions();//, World* world);
+        //update_space(world)
         
         //camera updates
         gf3d_camera_update_view();
@@ -117,6 +128,7 @@ int main(int argc,char *argv[])
                 //3D draws
                 gf3d_mesh_sky_draw(mesh, modelMat, GFC_COLOR_WHITE, texture);
                 world_draw(world);
+                gf3d_wire_draw(cube,);
                 entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
                 //2D draws
                // gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));

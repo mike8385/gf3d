@@ -1,9 +1,6 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-//cd into shaders folder
-//Run this: & 'C:\Users\mrbar\Git Folders\extraLibraries\VulkanSDK\1.4.321.1\Bin\glslang.exe' -V model.frag -o model_frag.spv
-
 layout(binding = 1) uniform sampler2D texSampler;
 
 layout(location = 0) in vec2 fragTexCoord;
@@ -31,5 +28,5 @@ void main()
 
 
 
-    outColor = texColor * colorMod; //Ultimately what we want to send out
+    outColor = texColor; //Ultimately what we want to send out
 }

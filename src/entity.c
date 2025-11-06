@@ -3,6 +3,8 @@
 #include "entity.h"
 #include "gf3d_mesh.h"
 #include "gfc_vector.h"
+#include "world.h"
+#include "collision.h"
 
 typedef struct 
 {
@@ -141,6 +143,7 @@ void entity_system_draw_all(GFC_Vector3D lightPos, GFC_Color lightColor)
 void entity_think(Entity* ent)
 {
 	if (!ent) return;
+
 	if (ent->think) ent->think(ent);
 }
 
@@ -183,7 +186,7 @@ void entity_update(Entity* ent)
 			ent->velocity = gfc_vector3d(0,0,0);
 		}
 	}
-	if (ent->think) ent->think(ent);
+	if (ent->update) ent->update(ent);
 }
 
 
@@ -215,7 +218,83 @@ void entity_move(Entity* self)
 }
 
 
-//void entity_get_floor_pos(Entity* ent, World* world, GFC_Vector)
+Uint8 entity_get_floor_pos(Entity* ent, World* world, GFC_Vector3D* contact)
+{
+	GFC_Vector3D up, down;
+	if ((!ent) || (!world)) return 0;
+	up = ent->position;
+	up.z += 100;
+	down = ent->position;
+	//down.z = -1000;
+	
+	return world_edge_test(world, up, down, contact);
+}
+
+void entity_check_collisions()//, World* world);
+{
+	Entity* a, *b;
+	int i, c;
+	Uint8 collision;
+	for (i = 0; i < entity_system.entity_max; i++)
+	{
+		a = &entity_system.entity_list[i];
+		if (!a->_inuse) continue;
+		if (a->collidedType == CT_None) continue;
+
+		for (c = i + 1; c < entity_system.entity_max; c++)
+		{
+			b = &entity_system.entity_list[c];
+			if (!b->_inuse) continue;
+			if (b->collidedType == CT_None) continue;
+			collision = collision_test(a, b);
+			if (collision)
+			{
+				//if (a->collide)
+				//{
+				//	a->collide(a, b);
+				//}
+				////TODO: Do callbacks on A and B, and do whatever they need to do
+				//
+				//if (b->collide)
+				//{
+				//	b->collide(b, a);
+				//}
+				slog("Collision: %d, (%s <-> %s)", collision_test(a, b), a->name, b->name);
+				
+
+			}
+		}
+
+	}
+}
+
+Entity* entity_list_get()
+{
+	EntitySystem* system;
+	system = entity_system.entity_list;
+	if (!system)
+	{
+		slog("Cant get entity List");
+		return;
+	}
+	return system;
+
+}
+
+void entity_step()
+{
+
+}
+
+void entity_step_all()
+{
+
+}
+
+
+//void entity_collide(Entity* ent, Entity* other)
 //{
+//	if ((!ent) || (!other)) return;
 //
+//	if (ent->collide) ent->collide(ent, other);
 //}

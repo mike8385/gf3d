@@ -10,6 +10,16 @@
 
 
 
+typedef enum
+{
+	CT_None = 1,
+	CT_Player = 2,
+	CT_Monster = 4,
+	CT_Building = 8,
+	CT_MAX = 16
+}CollidedType;
+
+
 typedef struct Entity_S
 {
 	Uint8							_inuse;
@@ -25,6 +35,7 @@ typedef struct Entity_S
 	GFC_Vector3D					velocity;
 	GFC_Vector3D					acceleration;
 	Uint8							drawShadow;
+	CollidedType					collidedType;
 
 
 	//GFC_Primitive					collision; 	//Primitives are shapes in 3D; this is NOT the same as a mesh primitive
@@ -34,8 +45,12 @@ typedef struct Entity_S
 	void							(*update)(struct Entity_S* self);
 	void							(*move)(struct Entity_S* self);
 	void							(*free)(struct Entity_S* self);
+	void							(*collide)(struct Entity_S* self, struct Entity_S* other);
+
 	Uint8							doGenericUpdate;
-	Uint8							isCam;
+	Uint8							canJump;
+	Uint8							onGround;
+	Uint8							justSpawned; //A check for first spawn to snap to ground
 	void*							data;
 }Entity;
 
@@ -79,9 +94,19 @@ void entity_system_move_all();
 
 void entity_move();
 
-void entity_get_floor_pos(Entity* ent, World* world);
+Uint8 entity_get_floor_pos(Entity* ent, World* world, GFC_Vector3D* contact);
 
 void entity_draw_shadow(Entity* ent);
 
+/*
+* @brief checks if an entity collides with worlds entities
+* @param self the entity itself
+* @param the world itself
+* @note will access entities of world within code
+*/
+void entity_check_collisions();
+
+
+Entity* entity_list_get();
 
 #endif

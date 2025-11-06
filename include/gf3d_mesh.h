@@ -40,6 +40,14 @@ typedef struct
 
 typedef struct
 {
+    GFC_Matrix4     model;
+    GFC_Matrix4     view;
+    GFC_Matrix4     proj;
+    GFC_Vector4D    color;
+}WireUBO;
+
+typedef struct
+{
     GFC_Vector3D vertex;
     GFC_Vector3D normal;
     GFC_Vector2D texel;
@@ -196,6 +204,7 @@ MeshUBO gf3d_mesh_get_ubo(
 
 
 
+void gf3d_wire_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture);
 
 
 
