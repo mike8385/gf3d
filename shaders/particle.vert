@@ -15,6 +15,7 @@ layout(binding = 0) uniform UniformBufferObject
 out gl_PerVertex
 {
     vec4 gl_Position;
+    float gl_PointSize
 };
 
 layout(location = 0) in vec3 inPosition;
@@ -36,10 +37,13 @@ void main()
 {
     mat3 normalMatrix;
     mat4 mvp = ubo.proj * ubo.view * ubo.model;
+
     gl_Position = mvp * vec4(inPosition, 1.0);
+    colorMod = ubo.color;
+
+
     normalMatrix = transpose(inverse(mat3(ubo.model)));
     outNormal = normalize(inNormal * normalMatrix);
-    colorMod = ubo.color;
     cameraPos = ubo.camera;
     worldPosition = ubo.model * vec4(inPosition, 1.0);
     fragTexCoord = inTexCoord;

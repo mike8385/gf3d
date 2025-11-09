@@ -27,6 +27,7 @@
 #include "world.h"
 #include "player.h"
 #include "space.h"
+#include "particles.h"
 
 #include "camera_entity.h"
 #include "gf3d_camera.h"
@@ -107,7 +108,7 @@ int main(int argc,char *argv[])
     camera_entity_spawn(cam, player);
     GFC_Box box2;
     box2 = gfc_box(0,0,0,10,10,10);
-
+    Particle* particle = gf3d_particle_new();
     space = space_load();
 
 
@@ -139,6 +140,7 @@ int main(int argc,char *argv[])
                 world_draw(world);
                 //gf3d_wire_draw(cube,);
                 entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
+                gf3d_particle_draw(particle, modelMat, GFC_COLOR_RED, NULL, lightPos, GFC_COLOR_RED);
                 //2D draws
                // gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));

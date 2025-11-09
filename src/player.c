@@ -64,7 +64,8 @@ void player_set_camera_ent(Entity* self, Entity* cam)
 void player_think(Entity* self)
 {
 	if (!self) return;
-	player_move(self); 
+	player_move(self);
+	player_attack(self);
 	//slog("Player Bounds: %f,%f,%f,%f,%f,%f", self->bounds.x, self->bounds.y, self->bounds.z, self->bounds.w, self->bounds.h, self->bounds.d);
 }
 
@@ -232,7 +233,10 @@ void player_collide(Entity* self, Entity* other)
 		/*self->position = 0;*/
 	}
 
+}
 
 
+void player_attack(self)
+{
 
 }

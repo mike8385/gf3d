@@ -1,4 +1,4 @@
-#include "simple_logger.h"
+﻿#include "simple_logger.h"
 
 
 #include "space.h"
@@ -53,15 +53,17 @@ int space_step_body(Space* space, Body* a)
 {
 	Body* b;
 	int i, c;
-	c = gfc_list_count(space->bodies);
+
+	//Check for static bodies
+	c = gfc_list_count(space->staticBodies);
 	for (i = 0; i < c; i++)
 	{
-		b = gfc_list_nth(space->bodies, i);
+		b = gfc_list_nth(space->staticBodies, i);
 		if (!b) continue;
 
 		if (body_test_body(a, b)) //We hit
 		{
-			slog("Collision happened");
+
 			return 1;
 		}
 	}
@@ -74,19 +76,38 @@ void space_step(Space* space)
 	int i, c;
 	if (!space) return;
 	c = gfc_list_count(space->bodies);
+
+	//Updates every dynamic (movable) body first
 	for (i = 0; i < c; i++)
 	{
 		b = gfc_list_nth(space->bodies, i);
 		if (!b) continue;
-		gfc_vector3d_add(b->stepPosition, b->stepPosition, b->stepVelocity);
+		b->oldPosition = b->stepPosition; //Old step position
+		gfc_vector3d_add(b->stepPosition, b->stepPosition, b->stepVelocity); //New step position
 	}
+	
+
+	//Now it check
 	for (i = 0; i < c; i++)
 	{
 		b = gfc_list_nth(space->bodies, i);
 		if (!b) continue;
 		if (space_step_body(space, b)) //We hit
 		{
+			b->stepPosition = b->oldPosition; //Step position goes back to the one prior
+			
+			//b->stepVelocity.x = 0;
+			//b->stepVelocity.y = 0;
 
+			//if (b->entity && b->entity->_inuse) 
+			//{
+			//	b->entity->velocity.x = 0;
+			//	b->entity->velocity.y = 0;
+			//}
+
+
+			//Current state of other, temp state of me and if it works, do it
+			//b->entity->position -= 
 		}
 
 	}
@@ -108,13 +129,33 @@ void space_run(Space* space)
 	{
 		space_step(space);
 	}
+	for (i = 0; i < c; i++)
+	{
+		Body* b = gfc_list_nth(space->bodies, i);
+		if (!b) continue;
+		b->position = b->stepPosition; //Each body now goes to their safe position
+		if (b->entity && b->entity->_inuse)
+		{
+			b->entity->position = b->position;
+
+		}
+	}
 }
 
 //Add entities shen you create the space, a copy of each entity
 void space_add_body(Space* space, Body* body)
 {
-	if ((!space)) return;
-	gfc_list_append(space->bodies, body);
+	if ((!space) || (!body)) return;
+
+	//If its not something that moves
+	if ((body->entity->collidedType != CT_Player) && (body->entity->collidedType != CT_Monster) && (body->entity->collidedType != CT_Power))
+	{
+		gfc_list_append(space->staticBodies, body);
+	}
+	else
+	{
+		gfc_list_append(space->bodies, body);
+	}
 }
 
 void space_add_static_body(Space* space, Body* body);
@@ -130,7 +171,7 @@ Space* space_load()
 	Body* b;
 	Uint32 ent_max;
 	Space* space;
-	Uint32 iter = 10;
+	Uint32 iter = 25;
 
 	ent_list = entity_list_get();
 	ent_max = entity_list_get_max();

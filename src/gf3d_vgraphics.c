@@ -32,6 +32,7 @@
 #include "gf3d_vgraphics.h"
 
 #include "gf3d_mesh.h"
+#include "particles.h"
 
 
 typedef struct

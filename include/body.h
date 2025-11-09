@@ -23,6 +23,7 @@ typedef struct {
 
 	GFC_Vector3D	stepVelocity;
 	GFC_Vector3D	stepPosition;
+	GFC_Vector3D	oldPosition;
 
 	Uint8			stopped; //Stop iterating on this body, we already hit something
 } Body;

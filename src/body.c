@@ -81,9 +81,10 @@ int body_test_body(Body* a, Body* b)
 	if (a->bounds.w <= 0 || a->bounds.h <= 0 || a->bounds.d <= 0) return 0;
 	if (b->bounds.w <= 0 || b->bounds.h <= 0 || b->bounds.d <= 0) return 0;
 
-
+	//Get bounds for each entity
 	aBox = a->bounds;
 	bBox = b->bounds;
+
 	//Reason we do this math is because the way we calculate step posiiton, allows the movement changes to work
 	aOffset = gfc_vector3d(a->stepPosition.x - a->position.x,
 							a->stepPosition.y - a->position.y,
@@ -95,19 +96,10 @@ int body_test_body(Body* a, Body* b)
 		b->stepPosition.z - b->position.z);
 	bBox.x += bOffset.x; bBox.y += bOffset.y; bBox.z += bOffset.z;
 
-	if (a->entity->collidedType == CT_Player)
+	//As of now it only works if B is a static object
+	if (gfc_box_overlap(aBox, b->bounds))
 	{
-		slog("%s Bounds: %f,%f,%f", a->entity->name, a->entity->bounds.x, a->entity->bounds.y, a->entity->bounds.z);
-		slog("A Bounds: %f,%f,%f", a->bounds.x, a->bounds.y, a->bounds.z);
-		slog("aBox Bounds: %f,%f,%f", aBox.x, aBox.y, aBox.z);
-	}
-
-
-
-
-
-	if (gfc_box_overlap(aBox, bBox))
-	{
+		//slog("collision");
 		return 1;
 	}
 	else

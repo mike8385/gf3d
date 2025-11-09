@@ -16,7 +16,8 @@ typedef enum
 	CT_Player = 2,
 	CT_Monster = 4,
 	CT_Building = 8,
-	CT_MAX = 16
+	CT_Power = 16,
+	CT_MAX = 32
 }CollidedType;
 
 
