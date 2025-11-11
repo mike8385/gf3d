@@ -130,10 +130,7 @@ int main(int argc,char *argv[])
         
         //camera updates
         gf3d_camera_update_view();
-        //gf3d_camera_set_position(entityCam->position);
-        //slog("EntityPos: %f, %f, %f", entityCam->position.x, entityCam->position.y, entityCam->position.z);
-        //slog("");
-       // slog("CameraPos: %f, %f, %f", gf3d_camera_get_position().x, gf3d_camera_get_position().y, gf3d_camera_get_position().z);
+
         gf3d_vgraphics_render_start();
                 //3D draws
                 gf3d_mesh_sky_draw(mesh, modelMat, GFC_COLOR_WHITE, texture);

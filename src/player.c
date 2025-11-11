@@ -77,6 +77,10 @@ void player_update(Entity* self)
 	if ((!self) || (!self->data)) return;
 	data = self->data;
 	entity_get_floor_pos(self, world_get_the(), &floorPos);
+
+
+
+
 	self->bounds = gfc_box(self->position.x - 7, self->position.y + 7, self->position.z, 14, 14, 14);
 
 	if (self->justSpawned)
@@ -135,6 +139,7 @@ void player_move(Entity* self)
 {
 	float move = 0;
 	float step;
+	float dash = 2;
 	GFC_Vector3D cameraDir;
 	PlayerEntityData* data;
 	if ((!self) || (!self->data)) return;
@@ -149,8 +154,9 @@ void player_move(Entity* self)
 	}
 	else
 	{
-		step = 0.5;
+		step = 0.5;		
 	}
+
 
 
 	//Movement Up/Down
@@ -158,6 +164,10 @@ void player_move(Entity* self)
 	{
 		//slog("Pressed w");
 		move += step;
+		//if (gfc_input_command_down("dash"))
+		//{
+		//	self->position.x =  self->position.x + dash;
+		//}
 	}
 	if (gfc_input_command_down("walkback"))
 	{
@@ -236,7 +246,39 @@ void player_collide(Entity* self, Entity* other)
 }
 
 
-void player_attack(self)
+void player_attack(Entity* self)
 {
+	int mx, my;
 
+	GFC_Vector3D projectilePos;
+	GFC_Vector3D projectileDir;
+
+	PlayerEntityData* data;
+	
+
+	if ((!self) || (!self->data)) return;
+
+	if (gfc_input_command_down("dive"))
+	{
+
+	}
+
+
+
+	//if (SDL_GetMouseState(&mx, &my) Somehow update pos here)
+	//{
+
+	//gfc_vector3d_sub(projectileDir, self->position, projectilePos); //Gets vector from camera to player
+	//gfc_vector3d_normalize(&projectileDir); //Now its a direction arrow, where to go like position wise, points at player
+	
+	// Make a raytrace from the player to shooting position
+	// Check if the line hits an entity what type it is
+	// If its not an enemy, return
+	// if it is, damage and return
+	//	slog("CLICKED");
+	//}
+	
 }
+
+
+

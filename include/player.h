@@ -49,7 +49,7 @@ void player_set_camera_ent(Entity* self, Entity* cam);
 void player_collide(Entity* self, Entity* other);
 
 
-void player_attack(self);
+void player_attack(Entity* self);
 
 
 
