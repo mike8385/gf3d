@@ -107,7 +107,7 @@ void gf3d_particle_delete(Particle* particle)
 }
 
 
-Particle* gf3d_particle_new()
+Particle* gf3d_particle_new(Uint32 particles_max)
 {
     int i;
     for (i = 0; i < particle_manager.particle_count; i++)
@@ -120,6 +120,8 @@ Particle* gf3d_particle_new()
     return NULL;
 }
 
+
+
 Particle* gf3d_particle_get_by_filename(const char* filename)
 {
     int i;
@@ -127,7 +129,7 @@ Particle* gf3d_particle_get_by_filename(const char* filename)
     for (i = 0; i < particle_manager.particle_count; i++)
     {
         if (!particle_manager.particle_list[i]._refCount)continue;
-        if (gfc_line_cmp(particle_manager.particle_list[i].filename, filename) == 0)
+        if (gfc_line_cmp(particle_manager.particle_list[i].name, filename) == 0)
         {
             return &particle_manager.particle_list[i];
         }
@@ -136,25 +138,12 @@ Particle* gf3d_particle_get_by_filename(const char* filename)
 }
 
 
-Particle* gf3d_particle_load_obj()
+Particle* gf3d_particle_load(const char* filename)
 {
     Particle* particle;
     ObjData* obj;
 
-   // if (!filename) return NULL;
-    //particle = gf3d_particle_get_by_filename(filename);
-    //if (particle)
-    //{
-    //    particle->_refCount++;  //If particle currently exists, grab it and end call
-    //    return particle;
-    //}
-    //obj = gf3d_obj_load_from_file(filename); //Parse data from file
-    //if (!obj)
-    //{
-    //    slog("Failed to parse obj file %s", filename);
-    //    return NULL;
-    //}
-    particle = gf3d_particle_new();
+   // particle = gf3d_particle_new();
     if (!particle)
     {
         //gf3d_obj_free(obj);
@@ -165,7 +154,6 @@ Particle* gf3d_particle_load_obj()
     //particle->objData = obj;
 
     gf3d_particle_create_vertex_buffer(particle);
-    gf3d_particle_create_face_buffer(particle);
     //gfc_line_cpy(particle->filename, filename);
     //gf3d_particle_create_vertex_buffer(particle);
     return particle;
@@ -179,17 +167,17 @@ VkVertexInputAttributeDescription* gf3d_particle_get_attribute_descriptions(Uint
     particle_manager.attributeDescriptions[0].binding = 0;
     particle_manager.attributeDescriptions[0].location = 0;
     particle_manager.attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-    particle_manager.attributeDescriptions[0].offset = offsetof(Vertex, vertex);
+    particle_manager.attributeDescriptions[0].offset = offsetof(ParticlePoint, pos);
 
     particle_manager.attributeDescriptions[1].binding = 0;
     particle_manager.attributeDescriptions[1].location = 1;
-    particle_manager.attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-    particle_manager.attributeDescriptions[1].offset = offsetof(Vertex, normal);
+    particle_manager.attributeDescriptions[1].format = VK_FORMAT_R32_SFLOAT;
+    particle_manager.attributeDescriptions[1].offset = offsetof(ParticlePoint, size);
 
     particle_manager.attributeDescriptions[2].binding = 0;
     particle_manager.attributeDescriptions[2].location = 2;
-    particle_manager.attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
-    particle_manager.attributeDescriptions[2].offset = offsetof(Vertex, texel);
+    particle_manager.attributeDescriptions[2].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    particle_manager.attributeDescriptions[2].offset = offsetof(ParticlePoint, color);
     if (count)*count = PARTICLE_ATTRIBUTE_COUNT;
     return particle_manager.attributeDescriptions;
 }
@@ -197,7 +185,7 @@ VkVertexInputAttributeDescription* gf3d_particle_get_attribute_descriptions(Uint
 VkVertexInputBindingDescription* gf3d_particle_get_bind_description()
 {
     particle_manager.bindingDescription.binding = 0;
-    particle_manager.bindingDescription.stride = sizeof(Vertex);
+    particle_manager.bindingDescription.stride = sizeof(ParticlePoint);
     particle_manager.bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     return &particle_manager.bindingDescription;
@@ -215,7 +203,7 @@ void gf3d_particle_create_vertex_buffer(Particle* particle)
 {
     void* data = NULL;
     VkDevice device = gf3d_vgraphics_get_default_logical_device();
-    Vertex* verticies;
+    ParticlePoint* verticies;
     Uint32 vcount;
     size_t bufferSize;
     VkBuffer stagingBuffer;
@@ -227,16 +215,12 @@ void gf3d_particle_create_vertex_buffer(Particle* particle)
         return;
     }
 
-    verticies = particle->objData->faceVertices;
-    vcount = particle->objData->face_vert_count;
-    //faces = prim->objData->outFace;
-    //fcount = prim->objData->face_count;
-    bufferSize = sizeof(Vertex) * vcount;
+    bufferSize = sizeof(ParticlePoint) * particle->_refCount;
     gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
     
     vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-    memcpy(data, verticies, (size_t)bufferSize);
+    memcpy(data, particle->particleData, (size_t)bufferSize);
     vkUnmapMemory(device, stagingBufferMemory);
 
     gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
@@ -246,51 +230,9 @@ void gf3d_particle_create_vertex_buffer(Particle* particle)
 
     vkDestroyBuffer(device, stagingBuffer, NULL);
     vkFreeMemory(device, stagingBufferMemory, NULL);
-
-    particle->vertexCount = vcount;
-
 }
 
 
-void gf3d_particle_create_face_buffer(Particle* particle)
-{
-    void* data = NULL;
-    VkDevice device = gf3d_vgraphics_get_default_logical_device();
-    Face* faces;
-    Uint32 fcount;
-    size_t bufferSize;
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
-
-    if (!particle)
-    {
-        slog("No particle primitize provided");
-        return;
-    }
-
-    faces = particle->objData->outFace;
-    fcount = particle->objData->face_count;
-    //faces = prim->objData->outFace;
-    //fcount = prim->objData->face_count;
-    bufferSize = sizeof(Face) * fcount;
-    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
-
-    vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-    memcpy(data, faces, (size_t)bufferSize);
-    vkUnmapMemory(device, stagingBufferMemory);
-
-    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &particle->faceBuffer, &particle->faceBufferMemory);
-
-    gf3d_buffer_copy(stagingBuffer, particle->faceBuffer, bufferSize);
-
-    particle->faceCount = fcount;
-
-    vkDestroyBuffer(device, stagingBuffer, NULL);
-    vkFreeMemory(device, stagingBufferMemory, NULL);
-
-}
 
 
 //Only one to keep
@@ -299,13 +241,14 @@ void gf3d_particle_queue_render(Particle* particle, Pipeline* pipe, void* uboDat
     int i, c;
     if ((!particle) || (!pipe) || (!uboData)) return;
     if (!texture) texture = particle_manager.defaultTexture;
-        gf3d_pipeline_queue_render(
-            pipe,
-            NULL,
-            1,
-            NULL,
-            uboData,
-            texture);
+    gf3d_pipeline_queue_render(
+        pipe,
+        particle->vertexBuffer,
+        particle->_refCount,
+        NULL,
+        uboData,
+        texture);
+
 
 
 }
@@ -313,23 +256,19 @@ void gf3d_particle_queue_render(Particle* particle, Pipeline* pipe, void* uboDat
 
 
 
-void gf3d_particle_draw(Particle* particle, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture, GFC_Vector3D lightPos, GFC_Color lightColor)
+void gf3d_particle_draw(Particle* particle, GFC_Color mod, Texture* texture)
 {
     ParticleUBO ubo = { 0 };
     //slog("In draw");
     if (!particle) return;
-    gfc_matrix4_copy(ubo.model, modelMat);
+    //gfc_matrix4_copy(ubo.model, modelMat);
     gf3d_vgraphics_get_view(&ubo.view);
 
 
     gf3d_vgraphics_get_projection_matrix(&ubo.proj);
 
-    ubo.color = gfc_color_to_vector4f(mod);
-    ubo.lightColor = gfc_color_to_vector4f(lightColor);
-    ubo.lightPos = gfc_vector3dw(lightPos, 1.0);
+    gf3d_vgraphics_get_view_extent_as_vector2d(&ubo.viewportSize);
 
-
-    ubo.camera = gfc_vector3dw(gf3d_camera_get_position(), 1.0);
 
     gf3d_particle_queue_render(particle, particle_manager.pipe, &ubo, texture);
 }

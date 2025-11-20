@@ -21,7 +21,7 @@ Entity* monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->velocity = gfc_vector3d(0, 0, 0);
 	self->acceleration = gfc_vector3d(0, 0, 0);
 	//self->velocity.z = gfc_crandom();
-	slog("Made it here");
+	//slog("Made it here");
 	return self;
 }
 

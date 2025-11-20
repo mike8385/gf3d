@@ -8,7 +8,8 @@
 #include "world.h"
 //Include vector, maatrix, 
 
-
+struct Body_S;
+typedef struct Body_S Body;
 
 typedef enum
 {
@@ -30,17 +31,24 @@ typedef struct Entity_S
 	GFC_Color						color;
 	GFC_Matrix4						matrix;
 	GFC_Vector3D					position;
+	GFC_Vector3D					newPos;
+	GFC_Vector3D					oldPos;
 	GFC_Vector3D					drawOffset;
 	GFC_Vector3D					rotation;
 	GFC_Vector3D					scale;
 	GFC_Vector3D					velocity;
+	GFC_Vector3D					newVelocity;
+	GFC_Vector3D					oldVelocity;
+
 	GFC_Vector3D					acceleration;
 	Uint8							drawShadow;
 	CollidedType					collidedType;
+	Body*							body;
 
 
 	//GFC_Primitive					collision; 	//Primitives are shapes in 3D; this is NOT the same as a mesh primitive
 	GFC_Box							bounds;
+	GFC_Box							floorBounds;
 	void							(*draw)(struct Entity_S *self);
 	void							(*think)(struct Entity_S* self);
 	void							(*update)(struct Entity_S* self);
@@ -52,6 +60,10 @@ typedef struct Entity_S
 	Uint8							canJump;
 	Uint8							onGround;
 	Uint8							justSpawned; //A check for first spawn to snap to ground
+	Uint8							bodyStopped;
+	Uint8							stopped;
+
+
 	void*							data;
 }Entity;
 
@@ -110,6 +122,6 @@ void entity_check_collisions();
 
 Entity* entity_list_get();
 
-Uint32* entity_list_get_max();
+Uint32 entity_list_get_max();
 
 #endif

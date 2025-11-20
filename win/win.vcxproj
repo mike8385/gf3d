@@ -171,6 +171,7 @@
     <ClCompile Include="..\src\body.c" />
     <ClCompile Include="..\src\camera_entity.c" />
     <ClCompile Include="..\src\collision.c" />
+    <ClCompile Include="..\src\commands.c" />
     <ClCompile Include="..\src\entity.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\gf2d_actor.c" />
@@ -240,6 +241,7 @@
     <ClInclude Include="..\include\body.h" />
     <ClInclude Include="..\include\camera_entity.h" />
     <ClInclude Include="..\include\collision.h" />
+    <ClInclude Include="..\include\commands.h" />
     <ClInclude Include="..\include\entity.h" />
     <ClInclude Include="..\include\gf2d_actor.h" />
     <ClInclude Include="..\include\gf2d_camera.h" />

@@ -2,6 +2,7 @@
 
 #include "world_entity.h"
 #include "world.h"
+#include "space.h"
 
 typedef struct {
 	Uint8			type;
@@ -27,9 +28,11 @@ Entity* world_entity_spawn(GFC_Vector3D position, GFC_Color color)
 
 Entity* world_entity_building_spawn(GFC_Vector3D position, GFC_Color color)
 {
-	Entity* self;
-	World* world;
-	WorldEntityData* data;
+	Entity* self = NULL;
+	World* world = NULL;
+	Body* body = NULL;
+	WorldEntityData* data = NULL;
+	Space* space = NULL;
 	data = gfc_allocate_array(sizeof(WorldEntityData), 1);
 	self = entity_new();
 	if (!self) return NULL;
@@ -43,15 +46,36 @@ Entity* world_entity_building_spawn(GFC_Vector3D position, GFC_Color color)
 	data->type = BUILDING;
 	self->collidedType = CT_Building;
 	self->data = data;
+
+	body = body_new();
+	if (!body)
+	{
+		slog("Cant get body for building");
+		return NULL;
+	}
+	self->body = body;
+
 	world = world_get_the();
 	if (!world)
 	{
-		slog("Couldnt get world data");
+		slog("Couldnt get world data for building to spawn");
 		return NULL;
 	}
 	gfc_list_append(world->entities, self);
 	world->maxEnt += 1;
-	slog("Got world data to spawn building");
+	//slog("Got world data to spawn building");
+
+	space = space_get_the();
+	if (!space)
+	{
+		slog("Couldnt find space");
+		return NULL;
+	}
+
+	space_add_body(space, body);
+	body_add_data(body, self);
+
+
 	return self;
 }
 

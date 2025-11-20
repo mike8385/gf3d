@@ -51,6 +51,7 @@ void player_collide(Entity* self, Entity* other);
 
 void player_attack(Entity* self);
 
+Entity* player_get_player();
 
 
 

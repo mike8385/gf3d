@@ -11,6 +11,16 @@ and set this up in init/run. Then ion run i think i want to make all steps
 */
 
 
+typedef struct
+{
+	Space* spaceData;
+} SpaceSystem;
+
+
+static SpaceSystem space_system = { 0 };
+
+static Space* theSpace;
+
 typedef enum
 {
 	CF_None = 0,
@@ -72,43 +82,74 @@ int space_step_body(Space* space, Body* a)
 
 void space_step(Space* space)
 {
-	Body* b;
-	int i, c;
+	Body* a, *b;
+
+
+	GFC_Box aBox;
+	GFC_Box bBox;
+	GFC_Vector3D aOffset;
+	GFC_Vector3D bOffset;
+
+
+	GFC_Vector3D dir;
+	float dp; 
+
+	int i, j, c, s;
 	if (!space) return;
 	c = gfc_list_count(space->bodies);
+	s = gfc_list_count(space->staticBodies);
 
-	//Updates every dynamic (movable) body first
+
+
+	//Body 1
 	for (i = 0; i < c; i++)
 	{
-		b = gfc_list_nth(space->bodies, i);
-		if (!b) continue;
-		b->oldPosition = b->stepPosition; //Old step position
-		gfc_vector3d_add(b->stepPosition, b->stepPosition, b->stepVelocity); //New step position
-	}
-	
+		a = gfc_list_nth(space->bodies, i);
+		if (!a) continue;
+		a->oldPosition = a->stepPosition; //Old step position
+		gfc_vector3d_add(a->stepPosition, a->stepPosition, a->stepVelocity); //New step position
 
-	//Now it check
-	for (i = 0; i < c; i++)
-	{
-		b = gfc_list_nth(space->bodies, i);
-		if (!b) continue;
-		if (space_step_body(space, b)) //We hit
+		//Body 2
+		for (j = 0; j < c; j++)
 		{
-			b->stepPosition = b->oldPosition; //Step position goes back to the one prior
-			
-			//b->stepVelocity.x = 0;
-			//b->stepVelocity.y = 0;
+			b = gfc_list_nth(space->bodies, j);
+			if (!b) continue;
+			if (a == b) continue;
 
-			//if (b->entity && b->entity->_inuse) 
-			//{
-			//	b->entity->velocity.x = 0;
-			//	b->entity->velocity.y = 0;
-			//}
+			//if (a->stopped) continue;
+			//if (b->stopped) continue;
+
+			aBox = a->bounds;
+			bBox = b->bounds;
+
+			aOffset = gfc_vector3d(a->stepPosition.x - a->position.x, a->stepPosition.y - a->position.y, a->stepPosition.z - a->position.z);
+			//bOffset = gfc_vector3d(b->stepPosition.x - b->position.x, b->stepPosition.y - b->position.y, b->stepPosition.z - b->position.z);
+			aBox.x = aBox.x + aOffset.x; aBox.y = aBox.y + aOffset.y; aBox.z = aBox.z + aOffset.z;
+
+			if (gfc_box_overlap(aBox, b->bounds))
+			{
+				a->stopped = 1;
+				
+				//Go back to safe-ish position
+				a->stepPosition = a->oldPosition;
+				//slog("Collide");
+
+				
 
 
-			//Current state of other, temp state of me and if it works, do it
-			//b->entity->position -= 
+				
+
+
+			}
+			else
+			{
+				a->stopped = 0;
+			}
+
+
 		}
+
+					a->position = a->stepPosition;
 
 	}
 
@@ -118,6 +159,8 @@ void space_step(Space* space)
 void space_run(Space* space)
 {
 	int i, c;
+	Entity* ent_list = entity_list_get();
+	Uint32 ent_max = entity_list_get_max();
 	if (!space) return;
 	//Prepare the space for an iteration
 	c = gfc_list_count(space->bodies);
@@ -129,17 +172,16 @@ void space_run(Space* space)
 	{
 		space_step(space);
 	}
-	for (i = 0; i < c; i++)
+	for (int i = 0; i < ent_max; i++)
 	{
-		Body* b = gfc_list_nth(space->bodies, i);
-		if (!b) continue;
-		b->position = b->stepPosition; //Each body now goes to their safe position
-		if (b->entity && b->entity->_inuse)
-		{
-			b->entity->position = b->position;
+		Entity* ent = &ent_list[i];
+		if (!ent->_inuse) continue;
+		if (!ent->body) continue;
 
-		}
+		// Sync physics result back to entity
+		ent->position = ent->body->stepPosition;
 	}
+
 }
 
 //Add entities shen you create the space, a copy of each entity
@@ -148,14 +190,14 @@ void space_add_body(Space* space, Body* body)
 	if ((!space) || (!body)) return;
 
 	//If its not something that moves
-	if ((body->entity->collidedType != CT_Player) && (body->entity->collidedType != CT_Monster) && (body->entity->collidedType != CT_Power))
-	{
-		gfc_list_append(space->staticBodies, body);
-	}
-	else
-	{
+	//if ((body->entity->collidedType != CT_Player) && (body->entity->collidedType != CT_Monster) && (body->entity->collidedType != CT_Power))
+	//{
+	//	gfc_list_append(space->staticBodies, body);
+	//}
+	//else
+	//{
 		gfc_list_append(space->bodies, body);
-	}
+	//}
 }
 
 void space_add_static_body(Space* space, Body* body);
@@ -171,28 +213,36 @@ Space* space_load()
 	Body* b;
 	Uint32 ent_max;
 	Space* space;
-	Uint32 iter = 25;
+	Uint32 iter = 5;
 
-	ent_list = entity_list_get();
-	ent_max = entity_list_get_max();
-	if (!ent_list) return;
-	if (!ent_max) return;
+
+	//if (!ent_list) return NULL;
+	//if (!ent_max) return NULL;
 	space = space_new();
 	if (!space)
 	{
 		slog("No space created");
-		return;
+		return NULL;
 	}
 	space_set_iterations(space, iter);
-	for (i = 0; i < ent_max; i++)
-	{
-		if (!ent_list[i]._inuse) continue;
-		b = body_new();
-		body_add_bounds(b, &ent_list[i]);
-		space_add_body(space, b);
-	}
 
+	theSpace = space;
+	//for (i = 0; i < ent_max; i++)
+	//{
+	//	if (!ent_list[i]._inuse) continue;
+	//	if (!ent_list[i].body) continue;
+	//	b = ent_list[i].body;
+	//	body_add_data(b, &ent_list[i]);
+	//	space_add_body(space, b);
+	//}
+	//Uint8 gfc_edge_box_test???
 
 	return space;
 }
 
+Space* space_get_the()
+{
+	if (!theSpace) return NULL;
+
+	return theSpace;
+}

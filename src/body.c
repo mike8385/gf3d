@@ -2,6 +2,7 @@
 
 
 #include "body.h"
+#include "entity.h"
 
 
 Body* body_new()
@@ -11,6 +12,7 @@ Body* body_new()
 	if (!b) return NULL;
 
 	b->bounds = gfc_box(1000, 0, -1000, 0, 0, 0);
+	b->stopped = 0;
 	return b;
 }
 
@@ -25,13 +27,20 @@ Body* body_free(Body* b)
 	free(b);
 }
 
-void body_add_bounds(Body* b, Entity* ent)
+void body_add_data(Body* b, Entity* ent)
 {
 	if ((!b) || (!ent)) return;
-	b->entity = ent;
 	b->position = ent->position;
 	b->velocity = ent->velocity;
 	b->bounds = ent->bounds;
+
+	b->boundsOffset = gfc_vector3d(
+		b->bounds.x - b->position.x,
+		b->bounds.y - b->position.y,
+		b->bounds.z - b->position.z
+	);
+
+	b->stopped = 0;
 }
 
 
@@ -48,20 +57,45 @@ void body_set_collision(Body* b, body_collide_func* collide, void* data)
 
 void body_reset_for_updates(Body* b, float factor)
 {
+	//If entity has body and is inuse, and the body is the same as that entities body update the body
+	Entity* ent_list;
+	Entity* ent;
+	Uint32 ent_max;
+	int i, j;
 	if (!b) return;
 
 	//If entity exists update values of body to current entity
-	if (b->entity && b->entity->_inuse)
+	ent_list = entity_list_get();
+	ent_max = entity_list_get_max();
+	for (i = 0; i < ent_max; i++)
 	{
-		b->position = b->entity->position;
-		b->velocity = b->entity->velocity;
-		b->bounds = b->entity->bounds;
+		if (ent_list[i]._inuse && ent_list[i].body == b)
+		{
+			b->position = ent_list[i].position;
+			b->velocity = ent_list[i].velocity;
+			b->bounds = ent_list[i].bounds;
+
+			b->stepPosition = b->position;
+			gfc_vector3d_scale(b->stepVelocity, b->velocity, factor);
+			//b->stopped = 0;
+			ent_list[i].bodyStopped = b->stopped;
+
+			b->boundsOffset = gfc_vector3d(
+				b->bounds.x - b->position.x,
+				b->bounds.y - b->position.y,
+				b->bounds.z - b->position.z
+			);
+
+
+		}
+
 	}
 
+
 	//Reset stepPosition
-	b->stepPosition = b->position;
-	gfc_vector3d_scale(b->stepVelocity, b->velocity, factor);
-	b->stopped = 0;
+	//b->stepPosition = b->position;
+	//gfc_vector3d_scale(b->stepVelocity, b->velocity, factor);
+	//b->stopped = 0;
 }
 
 int body_test_body(Body* a, Body* b)
@@ -97,7 +131,7 @@ int body_test_body(Body* a, Body* b)
 	bBox.x += bOffset.x; bBox.y += bOffset.y; bBox.z += bOffset.z;
 
 	//As of now it only works if B is a static object
-	if (gfc_box_overlap(aBox, b->bounds))
+	if (gfc_box_overlap(aBox, bBox))
 	{
 		//slog("collision");
 		return 1;
@@ -110,3 +144,10 @@ int body_test_body(Body* a, Body* b)
 
 	return 0;
 }
+
+
+//void body_update(Body* body)
+//{
+//	if (!body) return;
+//	if (body->entity->doGenericUpdate)
+//}

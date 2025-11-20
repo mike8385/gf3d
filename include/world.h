@@ -9,7 +9,9 @@ typedef struct
 	Mesh*					terrain;
 	Texture*				texture;
 	GFC_List*				entities; //Just the ones in the world
+	GFC_List*				terrainMesh;
 	Uint8					maxEnt;
+	Uint8					maxMesh;
 	GFC_Color				lightColor;
 	GFC_Vector3D			lightPos;
 	GFC_TextLine			name;
@@ -45,6 +47,9 @@ void world_draw(World* world);
 
 
 Uint8 world_edge_test(World* world, GFC_Vector3D start, GFC_Vector3D end, GFC_Vector3D* contact);
+
+Uint8 world_building_collision_test(World* world, GFC_Vector3D start, GFC_Vector3D end, GFC_Vector3D* contact);
+
 
 World* world_get_the();
 

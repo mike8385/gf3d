@@ -84,8 +84,13 @@ void camera_entity_think(Entity* self) {
 Entity* camera_entity_spawn(GFC_Vector3D position, Entity* target)
 {
 	GFC_Vector3D dir;
-	CameraEntityData* data;
-	Entity* self;
+	CameraEntityData* data = NULL;
+	Entity* self = NULL;
+	if (!target)
+	{
+		slog("No camera target");
+		return;
+	}
 	self = entity_new();
 	if (!self)
 	{

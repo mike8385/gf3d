@@ -21,43 +21,31 @@ typedef struct ObjData_S ObjData;
 //absolute basics of the particles information sent to the graphics card
 typedef struct
 {
-    GFC_Matrix4     model;
     GFC_Matrix4     view;
     GFC_Matrix4     proj;
-    GFC_Vector4D    color;
-    GFC_Vector4D    camera;
-    GFC_Vector4D    lightPos;
-    GFC_Vector4D    lightColor;
+    GFC_Vector2D    viewportSize;
 }ParticleUBO;
 
 
 typedef struct
 {
-    GFC_Vector3D pos;
-    GFC_Vector2D vertex;
-    GFC_Vector2D texel;
+    GFC_Vector3D    pos;
+    float           size;
+    GFC_Vector4D    color;
 }ParticlePoint;
 
-typedef struct
-{
-    Uint16  verts[3];
-}SpriteFace;
-
 
 typedef struct
 {
-    GFC_TextLine        filename;
-    Uint32              _refCount;
+    GFC_TextLine        name;
     Uint8               _inuse;
-    GFC_List           *primitives;
-    GFC_Box             bounds;
-    Uint32              vertexCount;
+    Uint8               _refCount;
+    Uint32              maxCount;
+
     VkBuffer            vertexBuffer;
     VkDeviceMemory      vertexBufferMemory;
-    Uint32              faceCount;
-    VkBuffer            faceBuffer;
-    VkDeviceMemory      faceBufferMemory;
-    ObjData* objData;
+    ParticlePoint*      particleData;
+
 }Particle;
 
 /**
@@ -75,7 +63,7 @@ void gf3d_particle_manager_close();
  * @brief get a new empty model
  * @return NULL on error, or an empty model
  */
-Particle *gf3d_particle_new();
+Particle *gf3d_particle_new(Uint32 particles_max);
 
 
 /**
@@ -85,13 +73,13 @@ Particle *gf3d_particle_new();
  * @param filename the name of the file to load
  * @return NULL on error or Particle data
  */
-Particle *gf3d_particle_load_obj(const char *filename);
+Particle *gf3d_particle_load(const char *filename);
 
 /*
 * @brief draw a particles given the parameters
 *
 */
-void gf3d_particle_draw(Particle* particles, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture, GFC_Vector3D lightPos, GFC_Color lightColor);
+void gf3d_particle_draw(Particle* particles, GFC_Color mod, Texture* texture);
 
 /**
  * @brief queue up a render for the current draw frame

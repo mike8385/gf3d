@@ -31,4 +31,7 @@ Space* space_load();
 
 int space_step_body(Space* space, Body* a);
 
+Space* space_get_the();
+
+
 #endif

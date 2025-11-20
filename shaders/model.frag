@@ -4,6 +4,8 @@
 //cd into shaders folder
 //Run this: & 'C:\Users\mrbar\Git Folders\extraLibraries\VulkanSDK\1.4.321.1\Bin\glslang.exe' -V model.frag -o model_frag.spv
 
+//I think this is the fragment shader
+
 layout(binding = 1) uniform sampler2D texSampler;
 
 layout(location = 0) in vec2 fragTexCoord;

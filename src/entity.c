@@ -25,6 +25,7 @@ Entity* entity_new()
 		{
 			if (!entity_system.entity_list[i]._inuse)
 			{
+				memset(&entity_system.entity_list[i], 0, sizeof(Entity));   //clears ALL garbage memory
 				entity_system.entity_list[i]._inuse = 1;
 				entity_system.entity_list[i].color = GFC_COLOR_WHITE;
 				entity_system.entity_list[i].scale = gfc_vector3d(1, 1, 1);
@@ -111,7 +112,11 @@ void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color lightColor)
 	GFC_Vector3D drawPos;
 	GFC_Matrix4 modelMat;
 	gfc_vector3d_add(drawPos, ent->drawOffset, ent->position);
-	if (!ent) return;
+	if (!ent)
+	{
+		slog("Couldnt draw entity");
+		return;
+	}
 	gfc_matrix4_from_vectors(
 		modelMat,
 		drawPos,
@@ -179,7 +184,11 @@ void entity_update(Entity* ent)
 	if (!ent) return;
 	if (ent->doGenericUpdate)
 	{
-		gfc_vector3d_add(ent->position, ent->position, ent->velocity);
+		if (ent->stopped == 0)
+		{
+			gfc_vector3d_add(ent->position, ent->position, ent->velocity);
+		}
+		
 		gfc_vector3d_scale(ent->velocity, ent->velocity, DAMPEN);
 		if (gfc_vector3d_magnitude_squared(ent->velocity) < 0.01)
 		{
@@ -213,7 +222,7 @@ void entity_move(Entity* self)
 
 	gfc_vector3d_add(self->velocity, self->velocity, self->acceleration);
 
-	gfc_vector3d_add(self->position, self->position, self->velocity);
+	//(self->position, self->position, self->velocity);
 
 
 
@@ -223,14 +232,26 @@ void entity_move(Entity* self)
 Uint8 entity_get_floor_pos(Entity* ent, World* world, GFC_Vector3D* contact)
 {
 	GFC_Vector3D up, down;
+	Uint8 floorCollide, roofCollide;
 	if ((!ent) || (!world)) return 0;
 	up = ent->position;
 	up.z += 100;
 	down = ent->position;
 	//down.z = -1000;
 	
-	return world_edge_test(world, up, down, contact);
+	roofCollide = world_building_collision_test(world, up, down, contact);
+	slog("%d", roofCollide);
+
+	if (roofCollide)
+	{
+		return 1;
+	}
+	else
+	{
+		return world_edge_test(world, up, down, contact);
+	}
 }
+
 
 void entity_check_collisions()//, World* world);
 {
@@ -243,25 +264,22 @@ void entity_check_collisions()//, World* world);
 		if (!a->_inuse) continue;
 		if (a->collidedType == CT_None) continue;
 
-		for (c = i + 1; c < entity_system.entity_max; c++)
+		a->stopped = 0;
+
+		for (c = 0; c < entity_system.entity_max; c++)
 		{
+
 			b = &entity_system.entity_list[c];
 			if (!b->_inuse) continue;
 			if (b->collidedType == CT_None) continue;
+
 			collision = collision_test(a, b);
 			if (collision)
 			{
-				//if (a->collide)
-				//{
-				//	a->collide(a, b);
-				//}
-				////TODO: Do callbacks on A and B, and do whatever they need to do
-				//
-				//if (b->collide)
-				//{
-				//	b->collide(b, a);
-				//}
-				slog("Collision: %d, (%s <-> %s)", collision_test(a, b), a->name, b->name);
+				a->stopped = 1;
+				break;
+
+				//slog("Collision: %d, (%s <-> %s)", collision_test(a, b), a->name, b->name);
 				
 
 			}
@@ -272,27 +290,24 @@ void entity_check_collisions()//, World* world);
 
 Entity* entity_list_get()
 {
-	EntitySystem* system;
-	system = entity_system.entity_list;
-	if (!system)
+
+	if (!entity_system.entity_list)
 	{
 		slog("Cant get entity List");
-		return;
+		return NULL;
 	}
-	return system;
+	return entity_system.entity_list;
 
 }
 
-Uint32* entity_list_get_max()
+Uint32 entity_list_get_max()
 {
-	EntitySystem* system;
-	system = entity_system.entity_max;
-	if (!system)
+	if (!entity_system.entity_max)
 	{
 		slog("Cant get entity list max");
-		return;
+		return 0;
 	}
-	return system;
+	return entity_system.entity_max;
 }
 
 

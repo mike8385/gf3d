@@ -2,6 +2,8 @@
 
 #include "player.h"
 
+#include "space.h"
+
 #include "gfc_input.h"
 
 typedef struct
@@ -10,12 +12,27 @@ typedef struct
 	Uint8		canFloat;
 }PlayerEntityData;
 
+typedef struct
+{
+	Entity* playerData;
+}PlayerSystem;
+
+static PlayerSystem player_system = { 0 }; /**<Initalize a LOCAL global entity manager*/
+
 Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 {
-	Entity* self;
+	Space* space = NULL;
+	Entity* self = NULL;
+	Body* body = NULL;
+	PlayerEntityData* data = NULL;
 	self = entity_new();
-	PlayerEntityData* data;
+
 	if (!self) return NULL;
+	self->acceleration = gfc_vector3d(0, 0, 0);
+	self->rotation = gfc_vector3d(0, 0, 0);
+	self->newPos = gfc_vector3d(self->position.x,
+		self->position.y,
+		self->position.z);
 	data = gfc_allocate_array(sizeof(PlayerEntityData), 1);
 	self->data = data;
 	gfc_line_cpy(self->name, "notAugmon");
@@ -23,12 +40,14 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->color = color;
 	self->position = position;
-	self->bounds = gfc_box(self->position.x -7, self->position.y + 7, self->position.z, 14, 14, 14);
+	self->bounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z, 14, 14, 14);
+	self->floorBounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z - 0.5, 14, 1, 14);
 	self->drawOffset = gfc_vector3d(0, 0, 6);
 	self->drawShadow = 1;
 	self->think = player_think;
-	self->free = player_free;
+	self->free = player_free; 
 	self->update = player_update;
+	//self->move = player_move;
 	//Sself->rotation.z = 90;
 	self->velocity = gfc_vector3d(0,0,0);
 	//self->velocity.z = gfc_crandom();
@@ -40,6 +59,29 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 	self->collidedType = CT_Player;
 	//self->collide = player_collide;
 	data->canFloat = 0;
+	self->stopped = 0;
+
+	//Body Stuff
+	body = body_new();
+	if (!body) 
+	{
+		slog("No body found");
+		return NULL;
+	}
+	self->body = body;
+	
+	//Space Stuff
+	space = space_get_the();
+	if (!space)
+	{
+		slog("Cant find space");
+		return NULL;
+	}
+	space_add_body(space, body);
+	body_add_data(body, self);
+
+	player_system.playerData = self;
+
 	return self;
 }
 //7 side, 7 down, 2 up
@@ -53,7 +95,7 @@ void player_free(Entity* self)
 
 void player_set_camera_ent(Entity* self, Entity* cam)
 {
-	PlayerEntityData* data;
+	PlayerEntityData* data = NULL;
 	if ((!self) || (!cam)) return;
 	data = self->data;
 	data->cam = cam;
@@ -63,8 +105,21 @@ void player_set_camera_ent(Entity* self, Entity* cam)
 
 void player_think(Entity* self)
 {
+	Body* body = NULL;
+	Space* space = NULL;
 	if (!self) return;
 	player_move(self);
+	
+	//Space Stuff
+	space = space_get_the();
+	if (!space)
+	{
+		slog("No space available");
+		return;
+	}
+	
+	//Body Stuff
+	//body_reset_for_updates(body, space->step);
 	player_attack(self);
 	//slog("Player Bounds: %f,%f,%f,%f,%f,%f", self->bounds.x, self->bounds.y, self->bounds.z, self->bounds.w, self->bounds.h, self->bounds.d);
 }
@@ -73,15 +128,14 @@ void player_think(Entity* self)
 void player_update(Entity* self)
 {
 	GFC_Vector3D floorPos;
-	PlayerEntityData* data;
+	PlayerEntityData* data = NULL;
 	if ((!self) || (!self->data)) return;
 	data = self->data;
 	entity_get_floor_pos(self, world_get_the(), &floorPos);
 
 
-
-
 	self->bounds = gfc_box(self->position.x - 7, self->position.y + 7, self->position.z, 14, 14, 14);
+	self->floorBounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z - 0.5, 14, 1, 14);
 
 	if (self->justSpawned)
 	{
@@ -92,7 +146,7 @@ void player_update(Entity* self)
 
 	//If the player is at floor or below, they are supposed to be on ground, set to ground
 	//And set onground to 1
-	if (self->position.z <= floorPos.z)
+	if (self->floorBounds.z <= floorPos.z)
 	{
 		self->onGround = 1;
 		self->position.z = floorPos.z;
@@ -101,6 +155,8 @@ void player_update(Entity* self)
 		self->acceleration.z = 0;
 		data->canFloat = 0;
 	}
+
+
 
 	if (data->canFloat == 1)
 	{
@@ -141,7 +197,7 @@ void player_move(Entity* self)
 	float step;
 	float dash = 2;
 	GFC_Vector3D cameraDir;
-	PlayerEntityData* data;
+	PlayerEntityData* data = NULL;
 	if ((!self) || (!self->data)) return;
 	data = self->data;
 	if (!data->cam) return;
@@ -217,7 +273,7 @@ void player_move(Entity* self)
 			//slog("CanJump: %f", self->canJump);
 			self->canJump = 0;
 			self->onGround = 0;
-			self->velocity.z = 10;
+			self->velocity.z = 15;
 			self->acceleration.z = -.5;
 			//Make accel .1 when i glide
 			data->canFloat = 1;
@@ -258,16 +314,16 @@ void player_attack(Entity* self)
 
 	if ((!self) || (!self->data)) return;
 
-	if (gfc_input_command_down("dive"))
+	if (SDL_GetMouseState(&mx,&my) == SDL_BUTTON(1))
 	{
-
+		
 	}
 
 
 
 	//if (SDL_GetMouseState(&mx, &my) Somehow update pos here)
 	//{
-
+	//Make an edge
 	//gfc_vector3d_sub(projectileDir, self->position, projectilePos); //Gets vector from camera to player
 	//gfc_vector3d_normalize(&projectileDir); //Now its a direction arrow, where to go like position wise, points at player
 	
@@ -277,8 +333,17 @@ void player_attack(Entity* self)
 	// if it is, damage and return
 	//	slog("CLICKED");
 	//}
-	
+	//ALSO make sure you DONT do particles unless you check if its within a certain distance
+
+
 }
 
+
+Entity* player_get_player()
+{
+	if (!player_system.playerData) return;
+
+	return player_system.playerData;
+}
 
 

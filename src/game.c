@@ -32,6 +32,8 @@
 #include "camera_entity.h"
 #include "gf3d_camera.h"
 
+#include "commands.h"
+
 extern int __DEBUG;
 
 static int _done = 0;
@@ -51,10 +53,12 @@ int main(int argc,char *argv[])
 {     
     //local variables
     Mesh* mesh;
-    Mesh* cube;
+    //Mesh* cube;
     Texture* texture;
     Entity* monster;
     Entity* player;
+
+    Particle* particle;
 
     //World Variables
     Entity* entityCam;
@@ -99,21 +103,30 @@ int main(int argc,char *argv[])
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     mesh = gf3d_mesh_load_obj("models/sky/sky.obj");
     //slog("%f, %f, %f", gf3d_camera_get_position().x, gf3d_camera_get_position().y, gf3d_camera_get_position().z);
+
+
     texture = gf3d_texture_load("models/sky/sky.png");
+
+    space = space_load();
+
     world = world_load("def/cityTerrain.json");
     monster = monster_spawn(gfc_vector3d(5, -15, 10), GFC_COLOR_WHITE);
     player = player_spawn(gfc_vector3d(0, 0, 10), GFC_COLOR_PINK);
     //world_entity_building_spawn(gfc_vector3d(50, 50, 0), GFC_COLOR_RED);
-    cube = gf3d_mesh_load_obj("models/box.obj");
+    //cube = gf3d_mesh_load_obj("models/box.obj");
     camera_entity_spawn(cam, player);
-    GFC_Box box2;
-    box2 = gfc_box(0,0,0,10,10,10);
-    Particle* particle = gf3d_particle_new();
-    space = space_load();
 
+    //Particle* particle = gf3d_particle_new();
+
+
+    //printf("sizeof(GFC_Matrix4) = %zu\n", sizeof(GFC_Matrix4));
+    //printf("sizeof(GFC_Vector4D) = %zu\n", sizeof(GFC_Vector4D));
+    //printf("sizeof(MeshUBO) = %zu\n", sizeof(MeshUBO));
+    //particle = gf3d_particle_new();
 
     while(!_done)
     {
+        cmds();
         gfc_input_update();
         gf2d_mouse_update();
         gf2d_font_update();
@@ -122,10 +135,13 @@ int main(int argc,char *argv[])
         gfc_matrix4_rotate_z(dinoM, id, theta);
         entity_system_think_all();
 
-        space_run(space);
-        entity_system_update_all();
+        //space_run(space);
         entity_system_move_all();
-        //entity_check_collisions();//, World* world);
+
+        entity_check_collisions();//, World* world);
+
+        entity_system_update_all();
+
         //update_space(world)
         
         //camera updates
@@ -137,7 +153,7 @@ int main(int argc,char *argv[])
                 world_draw(world);
                 //gf3d_wire_draw(cube,);
                 entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
-                gf3d_particle_draw(particle, modelMat, GFC_COLOR_RED, NULL, lightPos, GFC_COLOR_RED);
+                //gf3d_particle_draw(particle, GFC_COLOR_RED, NULL);
                 //2D draws
                // gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));

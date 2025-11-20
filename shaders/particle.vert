@@ -3,50 +3,36 @@
 
 layout(binding = 0) uniform UniformBufferObject
 {
-    mat4    model;
-    mat4    view;
-    mat4    proj;
-    vec4    color;
-    vec4    camera;
-    vec4    lightPos;
-    vec4    lightColor;
+    mat4    view; //Cameras Orientation + position
+    mat4    proj; //Projection matrix (Persepective or orthographic)
+    vec2    viewportSize;   // add this to your UBO
 } ubo;
 
 out gl_PerVertex
 {
     vec4 gl_Position;
-    float gl_PointSize
+    float gl_PointSize;
 };
 
 layout(location = 0) in vec3 inPosition;
-layout(location = 1) in vec3 inNormal;
-layout(location = 2) in vec2 inTexCoord;
+layout(location = 1) in float inSize; //World-Space particle radius
+layout(location = 2) in vec4 inColor;
 
 
-
-layout(location = 0) out vec2 fragTexCoord;
-layout(location = 1) out vec3 outNormal;
-layout(location = 2) out vec4 colorMod;
-layout(location = 3) out vec4 worldPosition;
-layout(location = 4) out vec4 cameraPos;
-layout(location = 5) out vec4 lightPos;
-layout(location = 6) out vec4 lightColor;
+layout(location = 0) out vec4 colorMod;
 
 
 void main()
 {
-    mat3 normalMatrix;
-    mat4 mvp = ubo.proj * ubo.view * ubo.model;
+//Convert "world radius" -> Pixel Radius: pixel_size = viewport_height_pixels * world_size / depth
 
-    gl_Position = mvp * vec4(inPosition, 1.0);
-    colorMod = ubo.color;
+    mat4 pv = ubo.proj * ubo.view;
+    gl_Position = pv * vec4(inPosition, 1.0);
 
+    gl_PointSize = ubo.viewportSize.y * inSize / gl_Position.w;
 
-    normalMatrix = transpose(inverse(mat3(ubo.model)));
-    outNormal = normalize(inNormal * normalMatrix);
-    cameraPos = ubo.camera;
-    worldPosition = ubo.model * vec4(inPosition, 1.0);
-    fragTexCoord = inTexCoord;
-    lightPos = ubo.lightPos;
-    lightColor = ubo.lightColor;
+    colorMod = inColor;
+
+    //if (texColor.a < 0.01) discard;
+
 }

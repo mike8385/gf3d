@@ -29,8 +29,8 @@ typedef struct
     VkDeviceMemory                          faceBufferMemory;
     VkVertexInputAttributeDescription       attributeDescriptions[MESH_ATTRIBUTE_COUNT];
     VkVertexInputBindingDescription         bindingDescription;
-    float                                   drawOrder;
     Texture*                                defaultTexture;
+    float                                   drawOrder;
 } MeshManager;
 
 static MeshManager mesh_manager = { 0 };
@@ -114,7 +114,7 @@ void gf3d_mesh_init(Uint32 mesh_max)
 void gf3d_mesh_delete(Mesh* mesh)
 {
     int i, c;
-    MeshPrimitive* prim;
+    MeshPrimitive* prim = NULL;
     if (!mesh)return;
     c = gfc_list_count(mesh->primitives);
     for (i = 0; i < c; i++)
@@ -170,9 +170,9 @@ Mesh* gf3d_mesh_get_by_filename(const char* filename)
 
 Mesh* gf3d_mesh_load_obj(const char* filename)
 {
-    MeshPrimitive* primitive;
-    Mesh* mesh;
-    ObjData* obj;
+    MeshPrimitive* primitive = NULL;
+    Mesh* mesh = NULL;
+    ObjData* obj = NULL;
 
     if (!filename) return NULL;
     //mesh = gf3d_mesh_get_by_filename(filename);
@@ -220,7 +220,7 @@ Mesh* gf3d_mesh_load_obj(const char* filename)
 
 void gf3d_mesh_primitive_free(MeshPrimitive* prim)
 {
-
+    slog("delete prims" );
 }
 
 
@@ -283,7 +283,7 @@ void gf3d_mesh_primitive_create_vertex_buffer(MeshPrimitive* prim)
 {
     void* data = NULL;
     VkDevice device = gf3d_vgraphics_get_default_logical_device();
-    Vertex* verticies;
+    Vertex* verticies = NULL;
     Uint32 vcount;
     size_t bufferSize;
     VkBuffer stagingBuffer;
@@ -324,7 +324,7 @@ void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* prim)
 {
     void* data = NULL;
     VkDevice device = gf3d_vgraphics_get_default_logical_device();
-    Face* faces;
+    Face* faces = NULL;
     Uint32 fcount;
     size_t bufferSize;
     VkBuffer stagingBuffer;
@@ -365,7 +365,7 @@ void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* prim)
 void gf3d_mesh_queue_render(Mesh* mesh, Pipeline* pipe, void* uboData, Texture* texture)
 {
     int i, c;
-    MeshPrimitive* prim;
+    MeshPrimitive* prim = NULL;
     if ((!mesh) || (!pipe) || (!uboData)) return;
     c = gfc_list_count(mesh->primitives);
     for (i = 0; i < c; i++)
