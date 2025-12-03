@@ -28,6 +28,7 @@
 #include "player.h"
 #include "space.h"
 #include "particles.h"
+#include "power.h"
 
 #include "camera_entity.h"
 #include "gf3d_camera.h"
@@ -57,6 +58,7 @@ int main(int argc,char *argv[])
     Texture* texture;
     Entity* monster;
     Entity* player;
+    Power* power;
 
     Particle* particle;
 
@@ -109,14 +111,16 @@ int main(int argc,char *argv[])
 
     space = space_load();
 
+
     world = world_load("def/cityTerrain.json");
     monster = monster_spawn(gfc_vector3d(5, -15, 10), GFC_COLOR_WHITE);
     player = player_spawn(gfc_vector3d(0, 0, 10), GFC_COLOR_PINK);
     //world_entity_building_spawn(gfc_vector3d(50, 50, 0), GFC_COLOR_RED);
     //cube = gf3d_mesh_load_obj("models/box.obj");
+    power = power_spawn(gfc_vector3d(0, 0, 50), GFC_COLOR_PINK);
+
     camera_entity_spawn(cam, player);
 
-    //Particle* particle = gf3d_particle_new();
 
 
     //printf("sizeof(GFC_Matrix4) = %zu\n", sizeof(GFC_Matrix4));
@@ -153,7 +157,7 @@ int main(int argc,char *argv[])
                 world_draw(world);
                 //gf3d_wire_draw(cube,);
                 entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
-                //gf3d_particle_draw(particle, GFC_COLOR_RED, NULL);
+                power_system_draw_all(lightPos, GFC_COLOR_BLUE);
                 //2D draws
                // gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
@@ -183,6 +187,7 @@ void parse_arguments(int argc,char *argv[])
         }
     }    
 }
+
 
 void game_frame_delay()
 {

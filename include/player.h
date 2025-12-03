@@ -22,18 +22,18 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color);
 void player_think(Entity* self);
 
 /*
-* @brief The think function for the player
+* @brief The move function for the player
 * @param self - the player entity itself
 */
 void player_move(Entity* self);
 
 /*
-* @brief The think function for the player
+* @brief The free function for the player
 * @param self - the player entity itself
 */
 void player_free(Entity* self);
 /*
-* @brief The think function for the player
+* @brief The update function for the player
 * @param self - the player entity itself
 */
 void player_update(Entity* self);

@@ -39,6 +39,7 @@ typedef struct Entity_S
 	GFC_Vector3D					velocity;
 	GFC_Vector3D					newVelocity;
 	GFC_Vector3D					oldVelocity;
+	GFC_Vector3D					forward;
 
 	GFC_Vector3D					acceleration;
 	Uint8							drawShadow;
@@ -124,4 +125,14 @@ Entity* entity_list_get();
 
 Uint32 entity_list_get_max();
 
+/*
+* @brief Does a hitscan against all entities that exist. Sets the type to whatever the entities type is
+* @param self the entity itself
+* @param other the other entity hit
+* @param start the starting position of the scan
+* @param end the ending position of scan
+* @param type the collision type (if wanted)
+* @return the entity hit
+*/
+Entity* entity_hitscan(Entity* self, GFC_Vector3D start, GFC_Vector3D end, CollidedType* type);
 #endif

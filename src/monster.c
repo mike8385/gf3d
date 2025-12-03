@@ -20,6 +20,7 @@ Entity* monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->rotation.z = 180;
 	self->velocity = gfc_vector3d(0, 0, 0);
 	self->acceleration = gfc_vector3d(0, 0, 0);
+	self->collidedType = CT_Monster;
 	//self->velocity.z = gfc_crandom();
 	//slog("Made it here");
 	return self;
@@ -36,7 +37,7 @@ void monster_think(Entity* self)
 
 void monster_update(Entity* self)
 {
-	GFC_Vector3D floorPos;
+	GFC_Vector3D floorPos = { 0 };
 	if (!self) return;
 	entity_get_floor_pos(self, world_get_the(), &floorPos);
 	self->position.z = floorPos.z;
@@ -44,5 +45,12 @@ void monster_update(Entity* self)
 
 void monster_move(Entity* self)
 {
+
+}
+
+void monster_free(Entity* self)
+{
+	if (!self) return;
+
 
 }

@@ -5,6 +5,8 @@
 #include "gfc_vector.h"
 #include "world.h"
 #include "collision.h"
+#include "gf3d_obj_load.h"
+
 
 typedef struct 
 {
@@ -240,7 +242,7 @@ Uint8 entity_get_floor_pos(Entity* ent, World* world, GFC_Vector3D* contact)
 	//down.z = -1000;
 	
 	roofCollide = world_building_collision_test(world, up, down, contact);
-	slog("%d", roofCollide);
+	//slog("%d", roofCollide);
 
 	if (roofCollide)
 	{
@@ -320,5 +322,68 @@ Uint32 entity_list_get_max()
 //}
 
 
+Entity* entity_hitscan(Entity* self, GFC_Vector3D start, GFC_Vector3D end, CollidedType* type)
+{
+	int i, j, c, d, f, p;
+	
+	GFC_Triangle3D t;
+	GFC_Vector3D contact;
+	GFC_Edge3D e;
+	
 
+	e = gfc_edge3d_from_vectors(start, end); //Make an edge
+
+
+	//Check for collision
+	if (!world_get_the()) return;
+	//c = gfc_list_count(world_get_the()->entities); //Get all the world entities
+	c = entity_list_get_max();
+	Entity* entityArray = entity_list_get();
+
+	for (i = 0; i < c; i++) //Iterate through them
+	{
+		Entity* ent = &entityArray[i];
+
+		if (!ent || !ent->mesh) continue;
+		if (!ent->mesh->primitives) continue;
+		if (!ent->_inuse) continue;
+		if (ent == self) continue;
+		f = gfc_list_count(ent->mesh->primitives); //Get all the entity primitives
+		for (p = 0; p < f; p++) //Iterate through them
+		{
+			MeshPrimitive* prim = gfc_list_nth(ent->mesh->primitives, p); //Find them all, and if they dont exist 
+			if ((!prim) || (!prim->objData)) continue;
+			d = prim->objData->face_count;
+			for (j = 0; j < d; j++)
+			{									//You count all the faces that are touching that object
+				t.a = prim->objData->faceVertices[prim->objData->outFace[j].verts[0]].vertex;
+				t.b = prim->objData->faceVertices[prim->objData->outFace[j].verts[1]].vertex;
+				t.c = prim->objData->faceVertices[prim->objData->outFace[j].verts[2]].vertex;
+
+				t.a.x += ent->position.x;
+				t.a.y += ent->position.y;
+				t.a.z += ent->position.z;
+
+				t.b.x += ent->position.x;
+				t.b.y += ent->position.y;
+				t.b.z += ent->position.z;
+
+				t.c.x += ent->position.x;
+				t.c.y += ent->position.y;
+				t.c.z += ent->position.z;
+
+				//slog("Contact Before: %f, %f, %f", contact->x, contact->y, contact->z);
+				if (gfc_trigfc_angle_edge_test(e, t, &contact))
+				{
+					//slog("%d", ent->collidedType);
+					*type = ent->collidedType;
+					return ent;
+
+
+				}
+			}
+		}
+	}
+	return NULL;
+}
 

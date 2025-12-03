@@ -35,7 +35,11 @@ Entity* world_entity_building_spawn(GFC_Vector3D position, GFC_Color color)
 	Space* space = NULL;
 	data = gfc_allocate_array(sizeof(WorldEntityData), 1);
 	self = entity_new();
-	if (!self) return NULL;
+	if (!self)
+	{
+		slog("Cannot get building entity");
+		return NULL;
+	}
 	gfc_line_cpy(self->name, "Building1");
 	self->mesh = gf3d_mesh_load_obj("models/terrain/building1.obj");
 	self->texture = gf3d_texture_load("models/terrain/building1.png");

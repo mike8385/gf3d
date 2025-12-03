@@ -25,7 +25,7 @@ void main()
 
     vec4 texColor = texture(texSampler, fragTexCoord);
 
-    texColor.xyz = max(0, dot(inNormal, -lightDir)) * texColor.xyz;
+    texColor.xyz = max(.5, dot(inNormal, -lightDir)) * texColor.xyz;
 
     //Brightness variable and distance
     // Brightness/distance

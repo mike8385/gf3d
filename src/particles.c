@@ -13,7 +13,7 @@
 
 //Null for face and stuff, and 1 for vector i think, and only use 1. Something like that use sprite too.
 
-#define PARTICLE_ATTRIBUTE_COUNT 3
+#define PARTICLE_ATTRIBUTE_COUNT 1
 
 extern int __DEBUG;
 
@@ -72,7 +72,7 @@ void gf3d_particle_init(Uint32 particle_max)
 
     particle_manager.pipe = gf3d_pipeline_create_from_config(
         gf3d_vgraphics_get_default_logical_device(),
-        "config/model_pipeline.cfg",
+        "config/particle_pipeline.cfg",
         gf3d_vgraphics_get_view_extent(),
         particle_max,
         gf3d_particle_get_bind_description(),
@@ -107,13 +107,13 @@ void gf3d_particle_delete(Particle* particle)
 }
 
 
-Particle* gf3d_particle_new(Uint32 particles_max)
+Particle* gf3d_particle_new()
 {
     int i;
     for (i = 0; i < particle_manager.particle_count; i++)
     {
-        if (particle_manager.particle_list[i]._refCount)continue;
-        particle_manager.particle_list[i]._refCount = 1;
+        if (particle_manager.particle_list[i]._inuse)continue;
+        particle_manager.particle_list[i]._inuse = 1;
         return &particle_manager.particle_list[i];
     }
     slog("gf3d_particle_new: no free slots for new particlees");
@@ -128,7 +128,7 @@ Particle* gf3d_particle_get_by_filename(const char* filename)
     if (!filename)return NULL;
     for (i = 0; i < particle_manager.particle_count; i++)
     {
-        if (!particle_manager.particle_list[i]._refCount)continue;
+        if (!particle_manager.particle_list[i]._inuse)continue;
         if (gfc_line_cmp(particle_manager.particle_list[i].name, filename) == 0)
         {
             return &particle_manager.particle_list[i];
@@ -138,29 +138,28 @@ Particle* gf3d_particle_get_by_filename(const char* filename)
 }
 
 
-Particle* gf3d_particle_load(const char* filename)
+Particle* gf3d_particle_load()
 {
     Particle* particle;
-    ObjData* obj;
+    //ObjData* obj;
 
-   // particle = gf3d_particle_new();
+   particle = gf3d_particle_new();
     if (!particle)
     {
         //gf3d_obj_free(obj);
         slog("Failed to make new particle");
         return NULL;
     }
+    //Probably doesnt work because I dont initialize anything
+    
 
     //particle->objData = obj;
 
-    gf3d_particle_create_vertex_buffer(particle);
+   //gf3d_particle_create_vertex_buffer(particle);
     //gfc_line_cpy(particle->filename, filename);
     //gf3d_particle_create_vertex_buffer(particle);
     return particle;
 }
-
-
-
 
 VkVertexInputAttributeDescription* gf3d_particle_get_attribute_descriptions(Uint32* count)
 {
@@ -168,16 +167,6 @@ VkVertexInputAttributeDescription* gf3d_particle_get_attribute_descriptions(Uint
     particle_manager.attributeDescriptions[0].location = 0;
     particle_manager.attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
     particle_manager.attributeDescriptions[0].offset = offsetof(ParticlePoint, pos);
-
-    particle_manager.attributeDescriptions[1].binding = 0;
-    particle_manager.attributeDescriptions[1].location = 1;
-    particle_manager.attributeDescriptions[1].format = VK_FORMAT_R32_SFLOAT;
-    particle_manager.attributeDescriptions[1].offset = offsetof(ParticlePoint, size);
-
-    particle_manager.attributeDescriptions[2].binding = 0;
-    particle_manager.attributeDescriptions[2].location = 2;
-    particle_manager.attributeDescriptions[2].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    particle_manager.attributeDescriptions[2].offset = offsetof(ParticlePoint, color);
     if (count)*count = PARTICLE_ATTRIBUTE_COUNT;
     return particle_manager.attributeDescriptions;
 }
@@ -191,6 +180,7 @@ VkVertexInputBindingDescription* gf3d_particle_get_bind_description()
     return &particle_manager.bindingDescription;
 }
 
+
 void gf3d_particle_free(Particle* particle)
 {
     if (!particle)return;
@@ -199,38 +189,6 @@ void gf3d_particle_free(Particle* particle)
 }
 
 
-void gf3d_particle_create_vertex_buffer(Particle* particle)
-{
-    void* data = NULL;
-    VkDevice device = gf3d_vgraphics_get_default_logical_device();
-    ParticlePoint* verticies;
-    Uint32 vcount;
-    size_t bufferSize;
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
-
-    if (!particle)
-    {
-        slog("No particle primitize provided");
-        return;
-    }
-
-    bufferSize = sizeof(ParticlePoint) * particle->_refCount;
-    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
-    
-    vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-    memcpy(data, particle->particleData, (size_t)bufferSize);
-    vkUnmapMemory(device, stagingBufferMemory);
-
-    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &particle->vertexBuffer, &particle->vertexBufferMemory);
-
-    gf3d_buffer_copy(stagingBuffer, particle->vertexBuffer, bufferSize);
-
-    vkDestroyBuffer(device, stagingBuffer, NULL);
-    vkFreeMemory(device, stagingBufferMemory, NULL);
-}
 
 
 
@@ -244,7 +202,7 @@ void gf3d_particle_queue_render(Particle* particle, Pipeline* pipe, void* uboDat
     gf3d_pipeline_queue_render(
         pipe,
         particle->vertexBuffer,
-        particle->_refCount,
+        1,
         NULL,
         uboData,
         texture);
@@ -256,12 +214,13 @@ void gf3d_particle_queue_render(Particle* particle, Pipeline* pipe, void* uboDat
 
 
 
-void gf3d_particle_draw(Particle* particle, GFC_Color mod, Texture* texture)
+void gf3d_particle_draw(Particle* particle, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture)
 {
+
     ParticleUBO ubo = { 0 };
     //slog("In draw");
     if (!particle) return;
-    //gfc_matrix4_copy(ubo.model, modelMat);
+    gfc_matrix4_copy(ubo.model, modelMat);
     gf3d_vgraphics_get_view(&ubo.view);
 
 
@@ -278,6 +237,7 @@ Pipeline* gf3d_particle_get_pipeline()
 {
     return particle_manager.pipe;
 }
+
 
 
 
