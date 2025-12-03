@@ -134,7 +134,10 @@ void gf3d_mesh_primitive_queue_render(MeshPrimitive* prim, Pipeline* pipe, void*
 MeshPrimitive *gf3d_mesh_primitive_new();
 
 
-
+/**
+ * @brief frees the primitive in a mesh and their objData
+ * @param prim the primitive to free
+ */
 void gf3d_mesh_primitive_free(MeshPrimitive* prim);
 
 
@@ -155,9 +158,17 @@ VkVertexInputBindingDescription * gf3d_mesh_get_bind_description();
 
 /**
  * @brief free a mesh that has been loaded from memory
+ * @param mesh the mesh itself
+ * @note called whenever you are done using the mesh, doesnt free memory unless _refcount == 0
+ * @note it just reduces ref count
  */
 void gf3d_mesh_free(Mesh *mesh);
 
+/*
+* @brief Frees/sets to 0 all the primitives, the list, and data for the mesh
+* @param mesh the mesh itself
+* @note acutal destructor, deletes all GPU buffers, deletes primitives, and frees all data. Sets mesh struct to 0
+*/
 void gf3d_mesh_delete(Mesh* mesh);
 
 

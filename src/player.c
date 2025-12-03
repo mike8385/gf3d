@@ -5,6 +5,7 @@
 #include "space.h"
 
 #include "gfc_input.h"
+#include "gf3d_obj_load.h"
 
 typedef struct
 {
@@ -40,6 +41,7 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->color = color;
 	self->position = position;
+
 	self->bounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z, 14, 14, 14);
 	self->floorBounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z - 0.5, 14, 1, 14);
 	self->drawOffset = gfc_vector3d(0, 0, 6);
@@ -60,25 +62,28 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 	//self->collide = player_collide;
 	data->canFloat = 0;
 	self->stopped = 0;
+	self->forward = gfc_vector3d(0, 1, 0);
+	self->newPos = gfc_vector3d(self->position.x, self->position.y, self->position.z);
+
 
 	//Body Stuff
-	body = body_new();
-	if (!body) 
-	{
-		slog("No body found");
-		return NULL;
-	}
-	self->body = body;
-	
-	//Space Stuff
-	space = space_get_the();
-	if (!space)
-	{
-		slog("Cant find space");
-		return NULL;
-	}
-	space_add_body(space, body);
-	body_add_data(body, self);
+	//body = body_new();
+	//if (!body) 
+	//{
+	//	slog("No body found");
+	//	return NULL;
+	//}
+	//self->body = body;
+	//
+	////Space Stuff
+	//space = space_get_the();
+	//if (!space)
+	//{
+	//	slog("Cant find space");
+	//	return NULL;
+	//}
+	//space_add_body(space, body);
+	//body_add_data(body, self);
 
 	player_system.playerData = self;
 
@@ -90,6 +95,30 @@ void player_free(Entity* self)
 {
 	if (!self) return;
 
+	if (self->data)
+	{
+		free(self->data);
+		self->data = NULL;
+	}
+
+	//if (self->texture)
+	//{
+	//	gf3d_texture_free(self->texture);
+	//	self->texture = NULL;
+	//}
+
+	//if (self->mesh)
+	//{
+	//	gf3d_mesh_free(self->mesh);
+	//	self->mesh = NULL;
+	//}
+
+	if (player_system.playerData == self)
+	{
+		player_system.playerData = NULL;
+	}
+
+	//free(self);
 }
 
 
@@ -127,7 +156,7 @@ void player_think(Entity* self)
 
 void player_update(Entity* self)
 {
-	GFC_Vector3D floorPos;
+	GFC_Vector3D floorPos = { 0 };
 	PlayerEntityData* data = NULL;
 	if ((!self) || (!self->data)) return;
 	data = self->data;
@@ -236,6 +265,7 @@ void player_move(Entity* self)
 		gfc_vector2d_scale(cameraDir, cameraDir, move); //Scale the direction, so it orients to player?
 		gfc_vector2d_add(self->velocity, self->velocity, cameraDir); //Add how much the player 'moved' and the current velocity at 
 																	//which they moved and set it to velocity new
+		self->forward = cameraDir;
 	}
 
 	move = 0;
@@ -259,6 +289,9 @@ void player_move(Entity* self)
 		gfc_vector2d_scale(cameraDir, cameraDir, move); //Scale the direction, so it orients to player?
 		gfc_vector2d_add(self->velocity, self->velocity, cameraDir); //Add how much the player 'moved' and the current position at 
 																		//which they moved and set it to position new
+		self->forward = cameraDir;
+
+
 	}
 
 	if ((self->velocity.x) || (self->velocity.y))
@@ -306,37 +339,50 @@ void player_attack(Entity* self)
 {
 	int mx, my;
 
-	GFC_Vector3D projectilePos;
-	GFC_Vector3D projectileDir;
-
 	PlayerEntityData* data;
-	
+	GFC_Vector3D end, start;
+	GFC_Vector3D forward;
+	GFC_Vector3D contact;
+	CollidedType type = CT_None;
+	Entity* hit = NULL;
+
 
 	if ((!self) || (!self->data)) return;
 
-	if (SDL_GetMouseState(&mx,&my) == SDL_BUTTON(1))
+	data = self->data;
+
+	if (SDL_GetMouseState(&mx, &my) == SDL_BUTTON(1))
 	{
+
+		start = self->position; //Players position
+		forward = self->forward; //Players forward direction
+		forward.z = 0;
+
+		gfc_vector3d_normalize(&forward); //Now its a direction arrow, where to go like position wise, points at player
+		//slog("%f, %f, %f", forward.x, forward.y, forward.z);
+
+		/*end = start + forward * 50*/
+		gfc_vector3d_scale(forward, forward, 50); //forward = forward * 50
+		gfc_vector3d_add(end, start, forward);
+		//slog("Ray start: %f %f %f", start.x, start.y, start.z);
+		//slog("Ray end:   %f %f %f", end.x, end.y, end.z);
+		hit = entity_hitscan(self, start, end, &type);
+		if (hit)
+		{
+			if (type == CT_Player) return;
+			if (type != CT_Monster) return;
+			slog("Hit monster");
+			entity_free(hit);
+		}
 		
+		
+
+
+
 	}
-
-
-
-	//if (SDL_GetMouseState(&mx, &my) Somehow update pos here)
-	//{
-	//Make an edge
-	//gfc_vector3d_sub(projectileDir, self->position, projectilePos); //Gets vector from camera to player
-	//gfc_vector3d_normalize(&projectileDir); //Now its a direction arrow, where to go like position wise, points at player
-	
-	// Make a raytrace from the player to shooting position
-	// Check if the line hits an entity what type it is
-	// If its not an enemy, return
-	// if it is, damage and return
-	//	slog("CLICKED");
-	//}
-	//ALSO make sure you DONT do particles unless you check if its within a certain distance
-
-
 }
+
+
 
 
 Entity* player_get_player()

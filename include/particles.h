@@ -21,6 +21,7 @@ typedef struct ObjData_S ObjData;
 //absolute basics of the particles information sent to the graphics card
 typedef struct
 {
+    GFC_Matrix4     model;
     GFC_Matrix4     view;
     GFC_Matrix4     proj;
     GFC_Vector2D    viewportSize;
@@ -30,8 +31,6 @@ typedef struct
 typedef struct
 {
     GFC_Vector3D    pos;
-    float           size;
-    GFC_Vector4D    color;
 }ParticlePoint;
 
 
@@ -73,13 +72,13 @@ Particle *gf3d_particle_new(Uint32 particles_max);
  * @param filename the name of the file to load
  * @return NULL on error or Particle data
  */
-Particle *gf3d_particle_load(const char *filename);
+Particle *gf3d_particle_load();
 
 /*
 * @brief draw a particles given the parameters
 *
 */
-void gf3d_particle_draw(Particle* particles, GFC_Color mod, Texture* texture);
+void gf3d_particle_draw(Particle* particle, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture);
 
 /**
  * @brief queue up a render for the current draw frame

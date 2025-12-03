@@ -3,9 +3,12 @@
 
 layout(binding = 0) uniform UniformBufferObject
 {
+    mat4    model;
     mat4    view; //Cameras Orientation + position
     mat4    proj; //Projection matrix (Persepective or orthographic)
     vec2    viewportSize;   // add this to your UBO
+    vec4    color;
+    float   size;
 } ubo;
 
 out gl_PerVertex
@@ -15,23 +18,29 @@ out gl_PerVertex
 };
 
 layout(location = 0) in vec3 inPosition;
-layout(location = 1) in float inSize; //World-Space particle radius
-layout(location = 2) in vec4 inColor;
-
 
 layout(location = 0) out vec4 colorMod;
+layout(location = 1) out vec2 screenPos;
+layout(location = 2) out float outSize; //World-Space particle radius
+layout(location = 3) out vec2 outCenter; //World-Space particle radius
+
+
+
+
 
 
 void main()
 {
 //Convert "world radius" -> Pixel Radius: pixel_size = viewport_height_pixels * world_size / depth
 
-    mat4 pv = ubo.proj * ubo.view;
-    gl_Position = pv * vec4(inPosition, 1.0);
+    mat4 mpv = ubo.proj * ubo.view * ubo.model;
+    gl_Position = mpv * vec4(inPosition, 1.0);
 
-    gl_PointSize = ubo.viewportSize.y * inSize / gl_Position.w;
+    outCenter = (0.5 * gl_Position.xy/gl_Position.w + 0.5) * ubo.viewportSize;
+    gl_PointSize = ubo.viewportSize.y * ubo.size / gl_Position.z;
+    outSize = gl_PointSize/2;
 
-    colorMod = inColor;
+    colorMod = ubo.color;
 
     //if (texColor.a < 0.01) discard;
 

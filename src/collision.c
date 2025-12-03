@@ -39,7 +39,7 @@ Uint8 collision_test(Entity* self, Entity* other)
 
 	if (gfc_box_overlap(aBox, other->bounds))
 	{
-		slog("Collisiion");
+		//slog("Collisiion");
 		return 1;
 	}
 	else

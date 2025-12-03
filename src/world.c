@@ -27,7 +27,11 @@ World* world_new()
 {
 	World* world = NULL;
 	world = gfc_allocate_array(sizeof(World), 1);
-	if (!world) return NULL;
+	if (!world)
+	{
+		slog("Cannot allocate spacefor world");
+		return NULL;
+	}
 	//Do init stuff
 	world->entities = gfc_list_new();
 	world->maxEnt = 0;
@@ -186,7 +190,7 @@ World* world_load(const char* filename)
 	//sj_object_get_color_value(config, "lightColor", &world->lightColor);
 	//sj_object_get_vector3d(config, "lightPos", &world->lightPos);
 
-
+	slog("Successfully built world");
 	sj_free(json);
 	return world;
 }

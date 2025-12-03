@@ -220,7 +220,12 @@ Mesh* gf3d_mesh_load_obj(const char* filename)
 
 void gf3d_mesh_primitive_free(MeshPrimitive* prim)
 {
-    slog("delete prims" );
+    if (!prim) return;
+    
+    if (prim->objData) gf3d_obj_free(prim->objData);
+    memset(prim, 0, sizeof(MeshPrimitive));
+
+    slog("delete prims");
 }
 
 

@@ -16,5 +16,7 @@ void monster_move(Entity* self);
 
 void monster_update(Entity* self);
 
+void monster_free(Entity* self);
+
 #endif
 #pragma once
