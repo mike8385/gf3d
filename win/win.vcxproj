@@ -198,6 +198,7 @@
     <ClCompile Include="..\src\gf3d_vgraphics.c" />
     <ClCompile Include="..\src\gf3d_vqueues.c" />
     <ClCompile Include="..\src\gf3d_mesh.c" />
+    <ClCompile Include="..\src\level_process.c" />
     <ClCompile Include="..\src\monster.c" />
     <ClCompile Include="..\src\notes.c" />
     <ClCompile Include="..\src\online.c" />
@@ -206,6 +207,7 @@
     <ClCompile Include="..\src\power.c" />
     <ClCompile Include="..\src\space.c" />
     <ClCompile Include="..\src\UI.c" />
+    <ClCompile Include="..\src\window.c" />
     <ClCompile Include="..\src\world.c" />
     <ClCompile Include="..\src\world_entity.c" />
   </ItemGroup>
@@ -269,6 +271,7 @@
     <ClInclude Include="..\include\gf3d_validation.h" />
     <ClInclude Include="..\include\gf3d_vgraphics.h" />
     <ClInclude Include="..\include\gf3d_vqueues.h" />
+    <ClInclude Include="..\include\level_process.h" />
     <ClInclude Include="..\include\monster.h" />
     <ClInclude Include="..\include\online.h" />
     <ClInclude Include="..\include\particles.h" />
@@ -276,6 +279,7 @@
     <ClInclude Include="..\include\power.h" />
     <ClInclude Include="..\include\space.h" />
     <ClInclude Include="..\include\UI.h" />
+    <ClInclude Include="..\include\window.h" />
     <ClInclude Include="..\include\world.h" />
     <ClInclude Include="..\include\world_entity.h" />
   </ItemGroup>

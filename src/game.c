@@ -33,10 +33,19 @@
 #include "camera_entity.h"
 #include "gf3d_camera.h"
 #include "UI.h"
+#include "window.h"
+#include "level_process.h"
 
 #include "commands.h"
 
 extern int __DEBUG;
+
+//Window system
+int process = 0; //0 is mainMenu, 1 is rendering, 2 is game, 3 is cleanup
+int currentLevel = 0;
+int currentWindow = 0;
+
+
 
 static int _done = 0;
 static Uint32 frame_delay = 33;
@@ -91,6 +100,9 @@ int main(int argc,char *argv[])
     gf3d_vgraphics_init("config/setup.cfg");
     gf2d_font_init("config/font.cfg");
     gf2d_actor_init(1000);
+
+    //window init
+    window_system_init(100);
     
     entity_system_init(8000);
     //game init
@@ -99,8 +111,9 @@ int main(int argc,char *argv[])
     bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
 
-    //Particles
-    gf3d_particle_init(100);
+    //Particles init
+    gf3d_particle_init(1000);
+
 
 
     // main game loop    
@@ -123,8 +136,7 @@ int main(int argc,char *argv[])
     //cube = gf3d_mesh_load_obj("models/box.obj");
     power = power_spawn(gfc_vector3d(0, 0, 50), GFC_COLOR_PINK);
 
-    Window* window;
-    window = window_main_menu(gfc_vector2d(0,0),GFC_COLOR_RED, "images/ui/window_background.png");
+
     camera_entity_spawn(cam, player);
 
     //particle = gf3d_particle_load();
@@ -140,25 +152,38 @@ int main(int argc,char *argv[])
         gfc_input_update();
         gf2d_mouse_update();
         gf2d_font_update();
-        theta += .1;
+        //theta += .1;
+        switch (process)    //UI think the thinks can go here
+        {
+            case 1:
+                entity_system_think_all();
 
-        gfc_matrix4_rotate_z(dinoM, id, theta);
-        entity_system_think_all();
+                //space_run(space);
+                entity_system_move_all();
 
-        //space_run(space);
-        entity_system_move_all();
+                entity_check_collisions();//, World* world);
 
-        entity_check_collisions();//, World* world);
+                entity_system_update_all();
 
-        entity_system_update_all();
+                //update_space(world)
 
-        //update_space(world)
-        
-        //camera updates
-        gf3d_camera_update_view();
+                //camera updates
+                gf3d_camera_update_view();
+                break;
+            default:
+                //level_process_main_menu();
+                break;
+            
+        }
 
+        //All drawings
         gf3d_vgraphics_render_start();
-                //3D draws
+
+        //Draws things for current level
+        switch (currentLevel)
+        {
+            case 1: //game
+                slog("wef");
                 gf3d_mesh_sky_draw(mesh, modelMat, GFC_COLOR_WHITE, texture);
                 world_draw(world);
                 //gf3d_wire_draw(cube,);
@@ -166,7 +191,27 @@ int main(int argc,char *argv[])
                 power_system_draw_all(lightPos, GFC_COLOR_BLUE);
                 //gf3d_particle_draw(particle, modelMat, GFC_COLOR_BLUE, texture);
                 //2D draws
+                //window_main_menu();
                 energy_bar();
+                break;
+            default: //Main menu
+                    window_main_menu();
+                break;
+        }
+        //gfc_matrix4_rotate_z(dinoM, id, theta);
+
+
+
+                ////3D draws
+                //gf3d_mesh_sky_draw(mesh, modelMat, GFC_COLOR_WHITE, texture);
+                //world_draw(world);
+                ////gf3d_wire_draw(cube,);
+                //entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
+                //power_system_draw_all(lightPos, GFC_COLOR_BLUE);
+                ////gf3d_particle_draw(particle, modelMat, GFC_COLOR_BLUE, texture);
+                ////2D draws
+                ////window_main_menu();
+                //energy_bar();
                 //gf2d_sprite_draw_image(window, gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
                 gf2d_mouse_draw();

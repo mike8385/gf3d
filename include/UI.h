@@ -9,17 +9,6 @@
 
 
 
-
-typedef struct
-{
-	Uint8			_inuse;
-
-	Sprite*			texture;
-	GFC_Vector2D	position;
-	GFC_TextLine	text;
-	GFC_Color		color;
-} Window;
-
 typedef struct
 {
 	GFC_Rect	box;
@@ -37,15 +26,6 @@ typedef struct
 
 
 
-
-void window_system_init(Uint32 max_windows);
-
-
-void window_system_close();
-
-Window* window_new();
-
-Window* window_main_menu(GFC_Vector2D position, GFC_Color color, const char* filename);
 
 EnergyBar* energy_bar();
 
