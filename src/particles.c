@@ -138,7 +138,7 @@ Particle* gf3d_particle_get_by_filename(const char* filename)
 }
 
 
-Particle* gf3d_particle_load()
+Particle* gf3d_particle_load(GFC_Color color, GFC_Vector3D position)
 {
     Particle* particle;
     //ObjData* obj;
@@ -151,13 +151,13 @@ Particle* gf3d_particle_load()
         return NULL;
     }
     //Probably doesnt work because I dont initialize anything
-    
+    particle->color = color;
+    particle->position = position;
 
     //particle->objData = obj;
 
-   //gf3d_particle_create_vertex_buffer(particle);
-    //gfc_line_cpy(particle->filename, filename);
-    //gf3d_particle_create_vertex_buffer(particle);
+
+    gf3d_particle_create_vertex_buffer(particle);
     return particle;
 }
 
@@ -166,7 +166,7 @@ VkVertexInputAttributeDescription* gf3d_particle_get_attribute_descriptions(Uint
     particle_manager.attributeDescriptions[0].binding = 0;
     particle_manager.attributeDescriptions[0].location = 0;
     particle_manager.attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-    particle_manager.attributeDescriptions[0].offset = offsetof(ParticlePoint, pos);
+    particle_manager.attributeDescriptions[0].offset = 0;
     if (count)*count = PARTICLE_ATTRIBUTE_COUNT;
     return particle_manager.attributeDescriptions;
 }
@@ -174,10 +174,35 @@ VkVertexInputAttributeDescription* gf3d_particle_get_attribute_descriptions(Uint
 VkVertexInputBindingDescription* gf3d_particle_get_bind_description()
 {
     particle_manager.bindingDescription.binding = 0;
-    particle_manager.bindingDescription.stride = sizeof(ParticlePoint);
+    particle_manager.bindingDescription.stride = sizeof(GFC_Vector3D);
     particle_manager.bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     return &particle_manager.bindingDescription;
+}
+
+void gf3d_particle_create_vertex_buffer(Particle* particle)
+{
+    void* data = NULL;
+    VkDevice device = particle_manager.device;
+    size_t bufferSize;
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    GFC_Vector3D vertices[] = {gfc_vector3d(0, 0, 0) };
+    
+    bufferSize = sizeof(GFC_Vector3D);
+
+    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
+
+    vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+    memcpy(data, vertices, bufferSize);
+    vkUnmapMemory(device, stagingBufferMemory);
+
+    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &particle->vertexBuffer, &particle->vertexBufferMemory);
+
+    gf3d_buffer_copy(stagingBuffer, particle->vertexBuffer, bufferSize);
+
+    vkDestroyBuffer(device, stagingBuffer, NULL);
+    vkFreeMemory(device, stagingBufferMemory, NULL);
 }
 
 
@@ -210,8 +235,6 @@ void gf3d_particle_queue_render(Particle* particle, Pipeline* pipe, void* uboDat
 
 
 }
-
-
 
 
 void gf3d_particle_draw(Particle* particle, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture)

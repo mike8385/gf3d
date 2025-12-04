@@ -9,6 +9,7 @@ layout(binding = 0) uniform UniformBufferObject
     vec2    viewportSize;   // add this to your UBO
     vec4    color;
     float   size;
+    float   padding;
 } ubo;
 
 out gl_PerVertex

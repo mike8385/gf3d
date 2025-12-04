@@ -83,6 +83,64 @@ Entity* world_entity_building_spawn(GFC_Vector3D position, GFC_Color color)
 	return self;
 }
 
+Entity* world_entity_lamp_spawn(GFC_Vector3D position, GFC_Color color)
+{
+	Entity* self = NULL;
+	World* world = NULL;
+	Body* body = NULL;
+	WorldEntityData* data = NULL;
+	Space* space = NULL;
+	data = gfc_allocate_array(sizeof(WorldEntityData), 1);
+	self = entity_new();
+	if (!self)
+	{
+		slog("Cannot get building entity");
+		return NULL;
+	}
+	gfc_line_cpy(self->name, "Lamp1");
+	self->mesh = gf3d_mesh_load_obj("models/terrain/lampPost.obj");
+	self->texture = gf3d_texture_load("models/terrain/building1.png");
+	self->color = color;
+	self->position = position;
+	self->bounds = gfc_box(position.x - 2, position.y - 2, position.z, 2, 10, 1);
+	self->think = world_entity_think;
+	data->type = BUILDING;
+	self->powered = 1;
+	self->collidedType = CT_Building;
+	self->data = data;
+
+	body = body_new();
+	if (!body)
+	{
+		slog("Cant get body for building");
+		return NULL;
+	}
+	self->body = body;
+
+	world = world_get_the();
+	if (!world)
+	{
+		slog("Couldnt get world data for building to spawn");
+		return NULL;
+	}
+	gfc_list_append(world->entities, self);
+	world->maxEnt += 1;
+	//slog("Got world data to spawn building");
+
+	space = space_get_the();
+	if (!space)
+	{
+		slog("Couldnt find space");
+		return NULL;
+	}
+
+	space_add_body(space, body);
+	body_add_data(body, self);
+
+
+	return self;
+}
+
 
 
 void world_entity_think(Entity* self)

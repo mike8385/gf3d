@@ -57,12 +57,18 @@ typedef struct Entity_S
 	void							(*free)(struct Entity_S* self);
 	void							(*collide)(struct Entity_S* self, struct Entity_S* other);
 
+	float							health;
+	float							maxHealth;
+	float							energy;
+	float							maxEnergy;
+
 	Uint8							doGenericUpdate;
 	Uint8							canJump;
 	Uint8							onGround;
 	Uint8							justSpawned; //A check for first spawn to snap to ground
 	Uint8							bodyStopped;
 	Uint8							stopped;
+	Uint8							powered;
 
 
 	void*							data;

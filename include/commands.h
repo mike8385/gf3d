@@ -32,7 +32,9 @@ void cmd_check_player_stopped(Entity* player);
 
 void cmd_check_player_grounded(Entity* player);
 
+void cmd_check_player_health(Entity* player);
 
+void cmd_check_player_energy(Entity* player);
 
 #endif
 

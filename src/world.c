@@ -185,7 +185,8 @@ World* world_load(const char* filename)
 	//If everything works, save world data then spawn in game entities
 	theWorld = world;
 	world_entity_building_spawn(gfc_vector3d(0,150,0), GFC_COLOR_RED);
-	
+	world_entity_lamp_spawn(gfc_vector3d(0, -150, 0), GFC_COLOR_YELLOW);
+
 
 	//sj_object_get_color_value(config, "lightColor", &world->lightColor);
 	//sj_object_get_vector3d(config, "lightPos", &world->lightPos);
