@@ -243,9 +243,10 @@ void player_move(Entity* self)
 	gfc_vector3d_sub(cameraDir, self->position, data->cam->position); //Gets vector from camera to player
 	gfc_vector3d_normalize(&cameraDir); //Now its a direction arrow, where to go like position wise, points at player
 
-	if (gfc_input_command_down("run"))
+	if (gfc_input_command_down("run") && self->energy > 0)
 	{
-		step = 0.9;
+		step = 3;
+		self->energy -= 5;
 	}
 	else
 	{
@@ -345,6 +346,9 @@ void player_collide(Entity* self, Entity* other)
 }
 
 
+//Make a new function called player abilities that is just attack, except its only abilities and not attacking
+//I have dashing, teleporting, floating, "parkour"and might need 2 more
+
 void player_attack(Entity* self)
 {
 	int mx, my;
@@ -386,14 +390,73 @@ void player_attack(Entity* self)
 				slog("Hit monster");
 				entity_free(hit);
 			}
+			//self->position = end; <-- This lets me teleport
 
 			self->energy -= 3;
+
+		}
+
+		if (SDL_GetMouseState(&mx, &my) == SDL_BUTTON(3))
+		{
+
+			start = self->position; //Players position
+			forward = self->forward; //Players forward direction
+			forward.z = 0;
+
+			gfc_vector3d_normalize(&forward); //Now its a direction arrow, where to go like position wise, points at player
+			//slog("%f, %f, %f", forward.x, forward.y, forward.z);
+
+			/*end = start + forward * 50*/
+			gfc_vector3d_scale(forward, forward, 250); //forward = forward * 50
+			gfc_vector3d_add(end, start, forward);
+			//slog("Ray start: %f %f %f", start.x, start.y, start.z);
+			//slog("Ray end:   %f %f %f", end.x, end.y, end.z);
+			hit = entity_hitscan(self, start, end, &type);
+			if (hit)
+			{
+				if (type == CT_Player) return;
+				if (type != CT_Monster) return;
+				slog("Hit monster");
+				entity_free(hit);
+			}
+			//self->position = end; <-- This lets me teleport
+
+			self->energy -= 10;
 
 		}
 	}
 	else
 	{
 		self->energy = 0;
+
+		if (SDL_GetMouseState(&mx, &my) == SDL_BUTTON(1))
+		{
+
+			start = self->position; //Players position
+			forward = self->forward; //Players forward direction
+			forward.z = 0;
+
+			gfc_vector3d_normalize(&forward); //Now its a direction arrow, where to go like position wise, points at player
+			//slog("%f, %f, %f", forward.x, forward.y, forward.z);
+
+			/*end = start + forward * 50*/
+			gfc_vector3d_scale(forward, forward, 2); //forward = forward * 50
+			gfc_vector3d_add(end, start, forward);
+			//slog("Ray start: %f %f %f", start.x, start.y, start.z);
+			//slog("Ray end:   %f %f %f", end.x, end.y, end.z);
+			hit = entity_hitscan(self, start, end, &type);
+			if (hit)
+			{
+				if (type == CT_Player) return;
+				if (type != CT_Monster) return;
+				slog("Hit monster");
+				entity_free(hit);
+			}
+			//self->position = end; <-- This lets me teleport
+
+
+		}
+
 	}
 
 }
