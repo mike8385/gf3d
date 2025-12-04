@@ -47,6 +47,39 @@ void cmds()
 		cmd_check_player_grounded(player);
 	}
 
+	if (gfc_input_key_pressed("4"))
+	{
+		if (!player)
+		{
+			slog("No player");
+			return;
+		}
+
+		cmd_check_player_health(player);
+	}
+
+	if (gfc_input_key_pressed("5"))
+	{
+		if (!player)
+		{
+			slog("No player");
+			return;
+		}
+
+		cmd_check_player_energy(player);
+	}
+
+	if (gfc_input_key_pressed("6"))
+	{
+		if (!player)
+		{
+			slog("No player");
+			return;
+		}
+		player->energy = 100;
+		slog("Reset players energy");
+	}
+
 
 }
 
@@ -65,3 +98,20 @@ void cmd_check_player_grounded(Entity* player)
 {
 	slog("Player grounded: %d", player->onGround);
 }
+
+void cmd_check_player_health(Entity* player)
+{
+	slog("Player Health: %f", player->health);
+	slog("Player Max Health: %f", player->maxHealth);
+
+}
+
+
+void cmd_check_player_energy(Entity* player)
+{
+	slog("Player Energy: %f", player->energy);
+	slog("Player Max Energy: %f", player->maxEnergy);
+
+
+}
+

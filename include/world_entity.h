@@ -27,6 +27,8 @@ Entity* world_entity_spawn(GFC_Vector3D position, GFC_Color color);
 */
 Entity* world_entity_building_spawn(GFC_Vector3D position, GFC_Color color);
 
+Entity* world_entity_lamp_spawn(GFC_Vector3D position, GFC_Color color);
+
 void world_entity_think(Entity* self);
 
 void world_entity_move(Entity* self);

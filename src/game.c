@@ -32,6 +32,7 @@
 
 #include "camera_entity.h"
 #include "gf3d_camera.h"
+#include "UI.h"
 
 #include "commands.h"
 
@@ -98,8 +99,11 @@ int main(int argc,char *argv[])
     bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
 
-    // main game loop    
+    //Particles
+    gf3d_particle_init(100);
 
+
+    // main game loop    
     gfc_matrix4_identity(modelMat);
     gfc_matrix4_identity(id);
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
@@ -119,9 +123,11 @@ int main(int argc,char *argv[])
     //cube = gf3d_mesh_load_obj("models/box.obj");
     power = power_spawn(gfc_vector3d(0, 0, 50), GFC_COLOR_PINK);
 
+    Window* window;
+    window = window_main_menu(gfc_vector2d(0,0),GFC_COLOR_RED, "images/ui/window_background.png");
     camera_entity_spawn(cam, player);
 
-
+    //particle = gf3d_particle_load();
 
     //printf("sizeof(GFC_Matrix4) = %zu\n", sizeof(GFC_Matrix4));
     //printf("sizeof(GFC_Vector4D) = %zu\n", sizeof(GFC_Vector4D));
@@ -158,8 +164,10 @@ int main(int argc,char *argv[])
                 //gf3d_wire_draw(cube,);
                 entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
                 power_system_draw_all(lightPos, GFC_COLOR_BLUE);
+                //gf3d_particle_draw(particle, modelMat, GFC_COLOR_BLUE, texture);
                 //2D draws
-               // gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
+                energy_bar();
+                //gf2d_sprite_draw_image(window, gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
                 gf2d_mouse_draw();
         gf3d_vgraphics_render_end();

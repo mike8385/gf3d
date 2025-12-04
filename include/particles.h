@@ -25,13 +25,11 @@ typedef struct
     GFC_Matrix4     view;
     GFC_Matrix4     proj;
     GFC_Vector2D    viewportSize;
+    GFC_Vector4D    color;
+    float           size;
+    float           padding;
 }ParticleUBO;
 
-
-typedef struct
-{
-    GFC_Vector3D    pos;
-}ParticlePoint;
 
 
 typedef struct
@@ -40,10 +38,11 @@ typedef struct
     Uint8               _inuse;
     Uint8               _refCount;
     Uint32              maxCount;
+    GFC_Color           color;
+    GFC_Vector3D        position;
 
     VkBuffer            vertexBuffer;
     VkDeviceMemory      vertexBufferMemory;
-    ParticlePoint*      particleData;
 
 }Particle;
 
@@ -62,7 +61,7 @@ void gf3d_particle_manager_close();
  * @brief get a new empty model
  * @return NULL on error, or an empty model
  */
-Particle *gf3d_particle_new(Uint32 particles_max);
+Particle *gf3d_particle_new();
 
 
 /**
@@ -72,7 +71,8 @@ Particle *gf3d_particle_new(Uint32 particles_max);
  * @param filename the name of the file to load
  * @return NULL on error or Particle data
  */
-Particle *gf3d_particle_load();
+Particle* gf3d_particle_load(GFC_Color color, GFC_Vector3D position);
+
 
 /*
 * @brief draw a particles given the parameters

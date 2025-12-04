@@ -246,6 +246,9 @@
     <ClCompile Include="..\src\power.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\UI.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\gf2d_actor.h">
@@ -447,6 +450,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\power.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\UI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

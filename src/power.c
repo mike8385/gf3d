@@ -267,7 +267,7 @@ Power* power_spawn(GFC_Vector3D position, GFC_Color color)
 	Particle* particle = NULL;
 
 	self = power_new();
-	particle = gf3d_particle_load();
+	//particle = gf3d_particle_load();
 
 	if (!self) return NULL;
 	if (!particle) return NULL;

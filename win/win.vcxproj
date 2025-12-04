@@ -205,6 +205,7 @@
     <ClCompile Include="..\src\player.c" />
     <ClCompile Include="..\src\power.c" />
     <ClCompile Include="..\src\space.c" />
+    <ClCompile Include="..\src\UI.c" />
     <ClCompile Include="..\src\world.c" />
     <ClCompile Include="..\src\world_entity.c" />
   </ItemGroup>
@@ -274,6 +275,7 @@
     <ClInclude Include="..\include\player.h" />
     <ClInclude Include="..\include\power.h" />
     <ClInclude Include="..\include\space.h" />
+    <ClInclude Include="..\include\UI.h" />
     <ClInclude Include="..\include\world.h" />
     <ClInclude Include="..\include\world_entity.h" />
   </ItemGroup>

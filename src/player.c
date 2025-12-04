@@ -6,17 +6,33 @@
 
 #include "gfc_input.h"
 #include "gf3d_obj_load.h"
+#include "gfc_primitives.h"
 
 typedef struct
 {
 	Entity*		cam;
+
+	Uint32		shards;
 	Uint8		canFloat;
+	Uint8		canShoot;
+	Uint8		hasMissle;
+
+
+	//Uint32		health;
+	//Uint32		energy;
+	//Uint32		maxHealth;
+	//Uint32		maxEnergy;
+
+
+
 }PlayerEntityData;
 
 typedef struct
 {
 	Entity* playerData;
 }PlayerSystem;
+
+
 
 static PlayerSystem player_system = { 0 }; /**<Initalize a LOCAL global entity manager*/
 
@@ -27,21 +43,36 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 	Body* body = NULL;
 	PlayerEntityData* data = NULL;
 	self = entity_new();
-
 	if (!self) return NULL;
-	self->acceleration = gfc_vector3d(0, 0, 0);
-	self->rotation = gfc_vector3d(0, 0, 0);
-	self->newPos = gfc_vector3d(self->position.x,
-		self->position.y,
-		self->position.z);
-	data = gfc_allocate_array(sizeof(PlayerEntityData), 1);
-	self->data = data;
+	//Basic Important Stuff
 	gfc_line_cpy(self->name, "notAugmon");
 	self->mesh = gf3d_mesh_load_obj("models/dino/dino.obj");
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->color = color;
 	self->position = position;
+	self->newPos = gfc_vector3d(self->position.x,
+		self->position.y,
+		self->position.z);
 
+	self->acceleration = gfc_vector3d(0, 0, 0);
+	self->rotation = gfc_vector3d(0, 0, 0);
+	self->velocity = gfc_vector3d(0, 0, 0);
+
+
+	//Data Info
+	data = gfc_allocate_array(sizeof(PlayerEntityData), 1);
+	self->data = data;
+	data->canFloat = 0;
+	data->hasMissle = 0;
+	data->shards = 0;
+
+	//Health & Energy Info
+	self->maxHealth = 100;
+	self->maxEnergy = 100;
+	self->health = self->maxHealth;
+	self->energy = self->maxEnergy;
+
+	//Extra Info
 	self->bounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z, 14, 14, 14);
 	self->floorBounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z - 0.5, 14, 1, 14);
 	self->drawOffset = gfc_vector3d(0, 0, 6);
@@ -49,41 +80,20 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 	self->think = player_think;
 	self->free = player_free; 
 	self->update = player_update;
-	//self->move = player_move;
-	//Sself->rotation.z = 90;
-	self->velocity = gfc_vector3d(0,0,0);
-	//self->velocity.z = gfc_crandom();
-	self->doGenericUpdate = 1;
+
 	entity_get_floor_pos(self, world_get_the(), &self->position);
+
+	self->doGenericUpdate = 1;
 	self->justSpawned = 1;
 	self->canJump = 1;
 	self->onGround = 1;
 	self->collidedType = CT_Player;
-	//self->collide = player_collide;
-	data->canFloat = 0;
 	self->stopped = 0;
 	self->forward = gfc_vector3d(0, 1, 0);
 	self->newPos = gfc_vector3d(self->position.x, self->position.y, self->position.z);
 
 
-	//Body Stuff
-	//body = body_new();
-	//if (!body) 
-	//{
-	//	slog("No body found");
-	//	return NULL;
-	//}
-	//self->body = body;
-	//
-	////Space Stuff
-	//space = space_get_the();
-	//if (!space)
-	//{
-	//	slog("Cant find space");
-	//	return NULL;
-	//}
-	//space_add_body(space, body);
-	//body_add_data(body, self);
+
 
 	player_system.playerData = self;
 
@@ -351,38 +361,62 @@ void player_attack(Entity* self)
 
 	data = self->data;
 
-	if (SDL_GetMouseState(&mx, &my) == SDL_BUTTON(1))
+	if (self->energy > 0)
 	{
-
-		start = self->position; //Players position
-		forward = self->forward; //Players forward direction
-		forward.z = 0;
-
-		gfc_vector3d_normalize(&forward); //Now its a direction arrow, where to go like position wise, points at player
-		//slog("%f, %f, %f", forward.x, forward.y, forward.z);
-
-		/*end = start + forward * 50*/
-		gfc_vector3d_scale(forward, forward, 50); //forward = forward * 50
-		gfc_vector3d_add(end, start, forward);
-		//slog("Ray start: %f %f %f", start.x, start.y, start.z);
-		//slog("Ray end:   %f %f %f", end.x, end.y, end.z);
-		hit = entity_hitscan(self, start, end, &type);
-		if (hit)
+		if (SDL_GetMouseState(&mx, &my) == SDL_BUTTON(1))
 		{
-			if (type == CT_Player) return;
-			if (type != CT_Monster) return;
-			slog("Hit monster");
-			entity_free(hit);
+
+			start = self->position; //Players position
+			forward = self->forward; //Players forward direction
+			forward.z = 0;
+
+			gfc_vector3d_normalize(&forward); //Now its a direction arrow, where to go like position wise, points at player
+			//slog("%f, %f, %f", forward.x, forward.y, forward.z);
+
+			/*end = start + forward * 50*/
+			gfc_vector3d_scale(forward, forward, 50); //forward = forward * 50
+			gfc_vector3d_add(end, start, forward);
+			//slog("Ray start: %f %f %f", start.x, start.y, start.z);
+			//slog("Ray end:   %f %f %f", end.x, end.y, end.z);
+			hit = entity_hitscan(self, start, end, &type);
+			if (hit)
+			{
+				if (type == CT_Player) return;
+				if (type != CT_Monster) return;
+				slog("Hit monster");
+				entity_free(hit);
+			}
+
+			self->energy -= 3;
+
 		}
-		
-		
-
-
-
 	}
+	else
+	{
+		self->energy = 0;
+	}
+
 }
 
+void player_power_drain(Entity* self)
+{
+	if (!self) return;
+	int i, j, k;
+	GFC_Sphere drainRadius;
+	Entity* entityList = entity_list_get();
+	Uint32 maxEnt = entity_list_get_max();
 
+	drainRadius = gfc_sphere(self->position.x, self->position.y, self->position.z, 10);
+
+
+	for (i = 0; i < maxEnt; i++)
+	{
+		if (&entityList[i] == self) continue;
+		if (!&entityList[i].powered) continue;
+		
+		//if (gfc_edge3d_to_sphere_intersection())
+	}
+}
 
 
 Entity* player_get_player()
