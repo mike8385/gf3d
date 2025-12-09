@@ -413,7 +413,7 @@ GFC_Vector2D gf3d_vgraphics_get_view_extent_as_vector2d()
 {
     VkExtent2D extent;
     extent = gf3d_swapchain_get_extent();
-    return gfc_vector2d(extent.width,extent.height);
+    return gfc_vector2d((float)extent.width,(float)extent.height);
 }
 
 SDL_Surface *gf3d_vgraphics_create_surface(Uint32 w,Uint32 h)

@@ -4,9 +4,8 @@
 layout(binding = 1) uniform sampler2D texSampler;
 
 layout(location = 0) in vec4 colorMod;
-layout(location = 1) in vec2 screenPos;
-layout(location = 2) in float outSize; //World-Space particle radius
-layout(location = 3) in float outCenter; //World-Space particle radius
+layout(location = 1) in float outSize; //World-Space particle radius
+layout(location = 2) in vec2 outCenter; //World-Space particle radius
 
 
 layout(location = 0) out vec4 outColor;

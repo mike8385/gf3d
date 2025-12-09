@@ -69,6 +69,7 @@ void gf3d_particle_init(Uint32 particle_max)
     particle_manager.particle_count = particle_max;
     particle_manager.device = gf3d_vgraphics_get_default_logical_device();
 
+    gf3d_particle_get_attribute_descriptions(&count);
 
     particle_manager.pipe = gf3d_pipeline_create_from_config(
         gf3d_vgraphics_get_default_logical_device(),
@@ -82,6 +83,7 @@ void gf3d_particle_init(Uint32 particle_max)
         VK_INDEX_TYPE_UINT16
     );
 
+    slog("particle manager initiliazed");
 
     particle_manager.defaultTexture = gf3d_texture_load("images/default.png");
     if (__DEBUG)slog("particle manager initiliazed");
@@ -161,6 +163,27 @@ Particle* gf3d_particle_load(GFC_Color color, GFC_Vector3D position)
     return particle;
 }
 
+
+Particle* gf3d_particle_load2(GFC_Vector3D position)
+{
+    Particle* particle;
+    //ObjData* obj;
+
+    particle = gf3d_particle_new();
+    if (!particle)
+    {
+        //gf3d_obj_free(obj);
+        slog("Failed to make new particle");
+        return NULL;
+    }
+
+    particle->position = position;
+
+    gf3d_particle_create_vertex_buffer(particle);
+    slog("loaded Particle");
+    return particle;
+}
+
 VkVertexInputAttributeDescription* gf3d_particle_get_attribute_descriptions(Uint32* count)
 {
     particle_manager.attributeDescriptions[0].binding = 0;
@@ -187,14 +210,14 @@ void gf3d_particle_create_vertex_buffer(Particle* particle)
     size_t bufferSize;
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
-    GFC_Vector3D vertices[] = {gfc_vector3d(0, 0, 0) };
+    GFC_Vector3D vertices = { 0 };
     
     bufferSize = sizeof(GFC_Vector3D);
 
     gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
 
     vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-    memcpy(data, vertices, bufferSize);
+    memcpy(data, &vertices, (size_t)bufferSize);
     vkUnmapMemory(device, stagingBufferMemory);
 
     gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &particle->vertexBuffer, &particle->vertexBufferMemory);
@@ -215,14 +238,13 @@ void gf3d_particle_free(Particle* particle)
 
 
 
-
-
-
 //Only one to keep
 void gf3d_particle_queue_render(Particle* particle, Pipeline* pipe, void* uboData, Texture* texture)
 {
+    //slog("particle queued");
+
     int i, c;
-    if ((!particle) || (!pipe) || (!uboData)) return;
+    if ((!particle) || (!pipe)) return;
     if (!texture) texture = particle_manager.defaultTexture;
     gf3d_pipeline_queue_render(
         pipe,
@@ -244,15 +266,27 @@ void gf3d_particle_draw(Particle* particle, GFC_Matrix4 modelMat, GFC_Color mod,
     //slog("In draw");
     if (!particle) return;
     gfc_matrix4_copy(ubo.model, modelMat);
+    gfc_matrix4_make_translation(ubo.model, particle->position);
     gf3d_vgraphics_get_view(&ubo.view);
 
-
     gf3d_vgraphics_get_projection_matrix(&ubo.proj);
+    
+    GFC_Vector2D v = gf3d_vgraphics_get_view_extent_as_vector2d();
+    ubo.viewportSize = gfc_vector4d(v.x, v.y, 0, 0);
 
-    gf3d_vgraphics_get_view_extent_as_vector2d(&ubo.viewportSize);
+    //ubo.viewportSize = gf3d_vgraphics_get_view_extent_as_vector2d();
 
+    ubo.color = gfc_color_to_vector4f(mod);
+    //slog("Red: %f, Green: %f, Blue: %f, Alpha: %f, ", ubo.color.x, ubo.color.y, ubo.color.z, ubo.color.w);
 
+    ubo.size = 5.0f;   // not 0.1
+    //slog("Size: %f", ubo.size);
+    ubo.padding = 0.0f;
+
+    //slog("Viewport size: %f, %f", ubo.viewportSize.x, ubo.viewportSize.y);
     gf3d_particle_queue_render(particle, particle_manager.pipe, &ubo, texture);
+
+
 }
 
 

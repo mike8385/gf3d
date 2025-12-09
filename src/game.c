@@ -82,6 +82,7 @@ int main(int argc,char *argv[])
     parse_arguments(argc,argv);
     init_logger("gf3d.log",0); //1 wont delete log file at end
     slog("gf3d begin");
+
     //gfc init
     gfc_input_init("config/input.cfg");
     gfc_config_def_init();
@@ -93,18 +94,19 @@ int main(int argc,char *argv[])
     gf2d_actor_init(1000);
     
     entity_system_init(8000);
+    power_system_init(1024);
     //game init
     srand(SDL_GetTicks());
     slog_sync();
     bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
 
-    //Particles
-    gf3d_particle_init(100);
+
 
 
     // main game loop    
     gfc_matrix4_identity(modelMat);
+    //modelMat[3][2] = 5;
     gfc_matrix4_identity(id);
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     mesh = gf3d_mesh_load_obj("models/sky/sky.obj");
@@ -121,18 +123,22 @@ int main(int argc,char *argv[])
     player = player_spawn(gfc_vector3d(0, 0, 10), GFC_COLOR_PINK);
     //world_entity_building_spawn(gfc_vector3d(50, 50, 0), GFC_COLOR_RED);
     //cube = gf3d_mesh_load_obj("models/box.obj");
-    power = power_spawn(gfc_vector3d(0, 0, 50), GFC_COLOR_PINK);
+    //power = power_spawn(gfc_vector3d(0, 75, 25), GFC_COLOR_PINK);
 
     Window* window;
     window = window_main_menu(gfc_vector2d(0,0),GFC_COLOR_RED, "images/ui/window_background.png");
-    camera_entity_spawn(cam, player);
 
-    //particle = gf3d_particle_load();
+   // particle = gf3d_particle_load2(gfc_vector3d(0, 75, 25));
+    //Particle* particle2 = gf3d_particle_load2(gfc_vector3d(12, 4, 10));
+    //Particle* particle3 = gf3d_particle_load2(gfc_vector3d(111, 23, 0));
+
 
     //printf("sizeof(GFC_Matrix4) = %zu\n", sizeof(GFC_Matrix4));
     //printf("sizeof(GFC_Vector4D) = %zu\n", sizeof(GFC_Vector4D));
     //printf("sizeof(MeshUBO) = %zu\n", sizeof(MeshUBO));
     //particle = gf3d_particle_new();
+    camera_entity_spawn(cam, player);
+
 
     while(!_done)
     {
@@ -144,13 +150,15 @@ int main(int argc,char *argv[])
 
         gfc_matrix4_rotate_z(dinoM, id, theta);
         entity_system_think_all();
-
+        power_system_think_all();
         //space_run(space);
         entity_system_move_all();
+        power_system_move_all();
 
         entity_check_collisions();//, World* world);
 
         entity_system_update_all();
+        power_system_update_all();
 
         //update_space(world)
         
@@ -158,13 +166,21 @@ int main(int argc,char *argv[])
         gf3d_camera_update_view();
 
         gf3d_vgraphics_render_start();
+
                 //3D draws
                 gf3d_mesh_sky_draw(mesh, modelMat, GFC_COLOR_WHITE, texture);
                 world_draw(world);
-                //gf3d_wire_draw(cube,);
+                ////gf3d_wire_draw(cube,);
                 entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
                 power_system_draw_all(lightPos, GFC_COLOR_BLUE);
-                //gf3d_particle_draw(particle, modelMat, GFC_COLOR_BLUE, texture);
+
+                //Particle Draw
+                //gf3d_particle_draw(particle, modelMat, GFC_COLOR_BLUE, NULL);
+                //gf3d_particle_draw(particle2, modelMat, GFC_COLOR_RED, NULL);
+                //gf3d_particle_draw(particle3, modelMat, GFC_COLOR_GREEN, NULL);
+
+                //slog("particle location: %f,%f,%f", particle->position.x, particle->position.y, particle->position.z);
+
                 //2D draws
                 energy_bar();
                 //gf2d_sprite_draw_image(window, gfc_vector2d(0,0));

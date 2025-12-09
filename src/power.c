@@ -24,6 +24,8 @@ Power* power_new()
 			{
 				memset(&power_system.power_list[i], 0, sizeof(Power));   //clears ALL garbage memory
 				power_system.power_list[i]._inuse = 1;
+				power_system.power_list[i].scale = gfc_vector3d(1, 1, 1);
+				power_system.power_list[i].rotation = gfc_vector3d(0, 0, 0);
 				power_system.power_list[i].color = GFC_COLOR_BLUE;
 				//power_system.power_list[i].scale = gfc_vector3d(1, 1, 1);
 				return &power_system.power_list[i];
@@ -86,11 +88,18 @@ void power_draw(Power* power, GFC_Vector3D lightPos, GFC_Color lightColor)
 {
 	GFC_Vector3D drawPos;
 	GFC_Matrix4 modelMat;
+	gfc_matrix4_identity(modelMat);
+
+
 	gfc_vector3d_add(drawPos, power->drawOffset, power->position);
 	if (!power)
 	{
 		slog("Couldnt draw power");
 		return;
+	}
+	if (power->particle == NULL)
+	{
+		slog("particle is NULL");
 	}
 	gfc_matrix4_from_vectors(
 		modelMat,
@@ -103,6 +112,7 @@ void power_draw(Power* power, GFC_Vector3D lightPos, GFC_Color lightColor)
 		power->color,
 		power->texture
 	);
+	//slog("Power Drawn");
 }
 
 void power_system_draw_all(GFC_Vector3D lightPos, GFC_Color lightColor)
@@ -117,11 +127,12 @@ void power_system_draw_all(GFC_Vector3D lightPos, GFC_Color lightColor)
 	}
 }
 
-void power_think(Power* ent)
+void power_think(Power* self)
 {
-	if (!ent) return;
+	if (!self) return;
 
-	if (ent->think) ent->think(ent);
+	if (self->think) self->think(self);
+	power_move(self);
 }
 
 
@@ -180,13 +191,14 @@ void power_move(Power* self)
 
 	if (self->move) self->move(self);
 
-	gfc_vector3d_add(self->velocity, self->velocity, self->acceleration);
+	gfc_vector3d_add(self->position, self->position, self->velocity);
 
 	//(self->position, self->position, self->velocity);
 
 
 
 }
+
 
 
 void power_check_collisions()//, World* world);
@@ -267,17 +279,26 @@ Power* power_spawn(GFC_Vector3D position, GFC_Color color)
 	Particle* particle = NULL;
 
 	self = power_new();
-	//particle = gf3d_particle_load();
+	particle = gf3d_particle_load2(position);
 
 	if (!self) return NULL;
-	if (!particle) return NULL;
+	if (!particle)
+	{
+		slog("gf3d_particle_load2: FAILED to allocate particle!");
+		return NULL;
+	}
 	self->acceleration = gfc_vector3d(0, 0, 0);
+	self->velocity = gfc_vector3d(0, 0, 0);
+
 	self->rotation = gfc_vector3d(0, 0, 0);
 	gfc_line_cpy(self->name, "powers");
 	self->particle = particle;
 	self->color = color;
 	self->position = position;
 	self->drawOffset = gfc_vector3d(0, 0, 6);
+	//self->move = power_move;
+	//self->think = power_think;
+	//self->update = power_update;
 
 
 	self->velocity = gfc_vector3d(0, 0, 0);

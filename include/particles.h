@@ -24,7 +24,7 @@ typedef struct
     GFC_Matrix4     model;
     GFC_Matrix4     view;
     GFC_Matrix4     proj;
-    GFC_Vector2D    viewportSize;
+    GFC_Vector4D    viewportSize;
     GFC_Vector4D    color;
     float           size;
     float           padding;
@@ -73,6 +73,8 @@ Particle *gf3d_particle_new();
  */
 Particle* gf3d_particle_load(GFC_Color color, GFC_Vector3D position);
 
+
+Particle* gf3d_particle_load2(GFC_Vector3D position);
 
 /*
 * @brief draw a particles given the parameters

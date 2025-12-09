@@ -7,6 +7,7 @@
 #include "gfc_input.h"
 #include "gf3d_obj_load.h"
 #include "gfc_primitives.h"
+#include "power.h"
 
 typedef struct
 {
@@ -369,6 +370,8 @@ void player_attack(Entity* self)
 	{
 		if (SDL_GetMouseState(&mx, &my) == SDL_BUTTON(1))
 		{
+			Power* power;
+			float speed = 1.0;
 
 			start = self->position; //Players position
 			forward = self->forward; //Players forward direction
@@ -376,6 +379,13 @@ void player_attack(Entity* self)
 
 			gfc_vector3d_normalize(&forward); //Now its a direction arrow, where to go like position wise, points at player
 			//slog("%f, %f, %f", forward.x, forward.y, forward.z);
+
+			power = power_spawn(gfc_vector3d(self->position.x, self->position.y, self->position.z + 5), GFC_COLOR_BLUE);
+			if (!power) return;
+			gfc_vector3d_scale(power->velocity, forward, speed);
+
+			//power->velocity = forward;
+
 
 			/*end = start + forward * 50*/
 			gfc_vector3d_scale(forward, forward, 50); //forward = forward * 50
