@@ -159,6 +159,57 @@ Center of mass S
 
 
 
+Sound: OUTPUT and INPUT channels
+
+Mixer: Mixes different audio output channels
+
+1 channel dedicated for background music
+
+Level has music filename
+
+if file length is > 0, try to load file
+
+Mix_Music
+
+Mix_LoadMUS
+
+MX_FreeMusic when your done with it.
+
+MX_PlayMusic (-1 on if you want it to be repeated forever)
+
+.mp3 is suppored if your pc has mp3 libraries
+.wav, .tif should work
+
+Mix_Chunk (sound chunk, effect, byte)
+smaller wave of special effects
+
+Allocate channels for chunks
+Halt playing music before freeing it
+
+
+Mix_PlayChannel (-1 for whatever is available, chunk, and # of loops)
+
+loops-> (0 if its once, 2 if you want it 2 times)
+
+if no channels available it wont play the sound
+
+Maxsounds: How many audio files you can load at once
+
+load_music ->
+
+
+
+
+
+Lighting:
+
+
+
+
+
+
+
+
 
 #include "simple_logger.h"
 
@@ -1068,50 +1119,6 @@ Uint8 collision_test(Entity* self, Entity* other)
 
 
 
-Sound: OUTPUT and INPUT channels
-
-Mixer: Mixes different audio output channels
-
-1 channel dedicated for background music
-
-Level has music filename
-
-if file length is > 0, try to load file
-
-Mix_Music
-
-Mix_LoadMUS
-
-MX_FreeMusic when your done with it.
-
-MX_PlayMusic (-1 on if you want it to be repeated forever)
-
-.mp3 is suppored if your pc has mp3 libraries
-.wav, .tif should work
-
-Mix_Chunk (sound chunk, effect, byte)
-smaller wave of special effects
-
-Allocate channels for chunks
-Halt playing music before freeing it
-
-
-Mix_PlayChannel (-1 for whatever is available, chunk, and # of loops)
-
-loops-> (0 if its once, 2 if you want it 2 times)
-
-if no channels available it wont play the sound
-
-Maxsounds: How many audio files you can load at once
-
-load_music -> 
-
-
-
-
-
-Lighting:
-	
 
 
 

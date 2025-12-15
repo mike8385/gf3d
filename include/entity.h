@@ -69,9 +69,17 @@ typedef struct Entity_S
 	Uint8							bodyStopped;
 	Uint8							stopped;
 	Uint8							powered;
+	GFC_Sphere						powerBounds;
 
 
 	void*							data;
+
+	//Animations
+	Uint32			totalFrames;
+	Uint32			currentFrame;
+	Mesh*			meshList;
+
+
 }Entity;
 
 

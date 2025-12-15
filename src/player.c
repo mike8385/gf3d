@@ -7,7 +7,7 @@
 #include "gfc_input.h"
 #include "gf3d_obj_load.h"
 #include "gfc_primitives.h"
-#include "power.h"
+#include "electric.h"
 
 typedef struct
 {
@@ -161,6 +161,12 @@ void player_think(Entity* self)
 	//Body Stuff
 	//body_reset_for_updates(body, space->step);
 	player_attack(self);
+	
+	if (self->energy > self->maxEnergy)
+	{
+		self->energy = self->maxEnergy;
+	}
+	//player_power_drain(self);
 	//slog("Player Bounds: %f,%f,%f,%f,%f,%f", self->bounds.x, self->bounds.y, self->bounds.z, self->bounds.w, self->bounds.h, self->bounds.d);
 }
 
@@ -246,8 +252,12 @@ void player_move(Entity* self)
 
 	if (gfc_input_command_down("run") && self->energy > 0)
 	{
+		Power* power = NULL;
+		power = electric_spawn(self->position, GFC_COLOR_BLUE);
+		power->powerType = PT_TIMER;
 		step = 3;
 		self->energy -= 5;
+
 	}
 	else
 	{
@@ -371,7 +381,7 @@ void player_attack(Entity* self)
 		if (SDL_GetMouseState(&mx, &my) == SDL_BUTTON(1))
 		{
 			Power* power;
-			float speed = 1.0;
+			float speed = 5.0;
 
 			start = self->position; //Players position
 			forward = self->forward; //Players forward direction
@@ -380,7 +390,8 @@ void player_attack(Entity* self)
 			gfc_vector3d_normalize(&forward); //Now its a direction arrow, where to go like position wise, points at player
 			//slog("%f, %f, %f", forward.x, forward.y, forward.z);
 
-			power = power_spawn(gfc_vector3d(self->position.x, self->position.y, self->position.z + 5), GFC_COLOR_BLUE);
+			power = electric_spawn(gfc_vector3d(self->position.x, self->position.y, self->position.z + 5), GFC_COLOR_BLUE);
+			power->powerType = PT_DISTANCE;
 			if (!power) return;
 			gfc_vector3d_scale(power->velocity, forward, speed);
 
@@ -475,7 +486,7 @@ void player_power_drain(Entity* self)
 {
 	if (!self) return;
 	int i, j, k;
-	GFC_Sphere drainRadius;
+	GFC_Sphere drainRadius, drainRadiusOther;
 	Entity* entityList = entity_list_get();
 	Uint32 maxEnt = entity_list_get_max();
 
@@ -486,7 +497,11 @@ void player_power_drain(Entity* self)
 	{
 		if (&entityList[i] == self) continue;
 		if (!&entityList[i].powered) continue;
-		
+		//drainRadiusOther = gfc_sphere(entityList[i].position.x, entityList[i].position.y, entityList[i].position.z, 10);
+		//if (gfc_sphere_overlap(drainRadius, drainRadiusOther))
+		//{
+		//	//slog("Overlap");
+		//}
 		//if (gfc_edge3d_to_sphere_intersection())
 	}
 }

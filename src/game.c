@@ -139,6 +139,8 @@ int main(int argc,char *argv[])
     //particle = gf3d_particle_new();
     camera_entity_spawn(cam, player);
 
+    //
+
 
     while(!_done)
     {
@@ -152,6 +154,7 @@ int main(int argc,char *argv[])
         entity_system_think_all();
         power_system_think_all();
         //space_run(space);
+
         entity_system_move_all();
         power_system_move_all();
 
@@ -183,6 +186,8 @@ int main(int argc,char *argv[])
 
                 //2D draws
                 energy_bar();
+                health_bar();
+
                 //gf2d_sprite_draw_image(window, gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
                 gf2d_mouse_draw();

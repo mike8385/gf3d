@@ -18,7 +18,7 @@ static WindowSystem window_system = { 0 };
 
 typedef struct
 {
-	EnergyBar* energy_list;
+	UIBar* energy_list;
 }EnergySystem;
 
 static EnergySystem energy_system = { 0 };
@@ -101,9 +101,9 @@ Window* window_main_menu(GFC_Vector2D position, GFC_Color color, const char* fil
 
 //Energy Bar Code:
 
-EnergyBar* energy_bar_init()
+UIBar* energy_bar_init()
 {
-	energy_system.energy_list = gfc_allocate_array(sizeof(EnergyBar), 1);
+	energy_system.energy_list = gfc_allocate_array(sizeof(UIBar), 1);
 	if (!window_system.window_list)
 	{
 		slog("Failed to allocate energybar windows for the system");
@@ -127,14 +127,14 @@ void energy_system_close()
 	memset(&energy_system, 0, sizeof(EnergySystem));
 }
 
-EnergyBar* energy_new()
+UIBar* energy_new()
 {
 	int i;
 	if (energy_system.energy_list)
 	{
 		if (!energy_system.energy_list[i]._inuse)
 		{
-			memset(&energy_system.energy_list[i], 0, sizeof(EnergyBar));   //clears ALL garbage memory
+			memset(&energy_system.energy_list[i], 0, sizeof(UIBar));   //clears ALL garbage memory
 			energy_system.energy_list[i]._inuse = 1;
 			return &energy_system.energy_list[i];
 		}
@@ -143,14 +143,14 @@ EnergyBar* energy_new()
 	return NULL;
 }
 
-EnergyBar* energy_bar()
+UIBar* energy_bar()
 {
 	Sprite* sprite;
 	Entity* player;
 
 	player = player_get_player();
 	if (!player) return NULL;
-	//EnergyBar* energyBar;
+	//UIBar* energyBar;
 
 	//energyBar = energy_new();
 	//if (!energyBar) return;
@@ -173,14 +173,32 @@ EnergyBar* energy_bar()
 	
 }
 
-/*
-* void UI_health_bar(GFC_Rect box)
+UIBar* health_bar()
 {
-
-	Entity* player;
-	float playerHealth = get_player_health();
 	Sprite* sprite;
-	sprite = gf2d_sprite_load_image("images/UI/fullhealth.png");
-	gf2d_sprite_draw_image(sprite, gfc_vector2d(box.x, box.y));
-	gf2d_draw_rect(box, GFC_COLOR_BLACK);
-*/
+	Entity* player;
+
+	player = player_get_player();
+	if (!player) return NULL;
+	//UIBar* energyBar;
+
+	//energyBar = energy_new();
+	//if (!energyBar) return;
+	//energyBar->_inuse = 1;
+	//energyBar->box = gfc_rect(0, 5, 50, 50);
+	GFC_Vector4D crop;
+	GFC_Vector4D colorCrop;
+	GFC_Color	barColor;
+
+	crop = gfc_vector4d(0, 0, 0, 70);
+	barColor = GFC_COLOR_RED;
+	colorCrop = gfc_vector4d(player->health * 2, 0, 0, 70);
+
+	sprite = gf2d_sprite_load_image("images/ui/healthbar.png");
+	gf2d_sprite_draw(sprite, gfc_vector2d(0, 55), NULL, NULL, NULL, NULL, &barColor, &crop, NULL);
+	gf2d_sprite_draw(sprite, gfc_vector2d(0, 55), NULL, NULL, NULL, NULL, NULL, &colorCrop, NULL);
+
+
+
+
+}

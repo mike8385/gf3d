@@ -1,7 +1,7 @@
 {
   "world": 
   {
-    "terrainMesh": "models/terrain/cityTerrain.obj",
+    "terrainMesh": "models/terrain/cityTerrain2.obj",
     "terrainTexture": "models/terrain/cityTerrain_skin.png"
   }
 

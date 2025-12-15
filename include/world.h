@@ -4,6 +4,16 @@
 #include "gf3d_mesh.h"
 //#include "space.h"
 
+
+typedef struct
+{
+	Uint32 triangleCount;            // number of triangles
+	GFC_List* neighbors;          // neighbors[i] = list of neighboring face indices
+	Uint32 neighborCount;       // neighborCount[i] tells how many neighbors each face has
+	GFC_Vector3D* faceCenters;   // center point of each triangle (optional but useful)
+
+} NavMesh;
+
 typedef struct
 {
 	Mesh*					terrain;
@@ -16,8 +26,12 @@ typedef struct
 	GFC_Vector3D			lightPos;
 	GFC_TextLine			name;
 	//Space*				space;
+	float					length;
+	float					width;
+	NavMesh*				navMesh;
 
 }World;
+
 
 
 /*
@@ -53,5 +67,7 @@ Uint8 world_building_collision_test(World* world, GFC_Vector3D start, GFC_Vector
 
 World* world_get_the();
 
+
+GFC_Vector2D world_get_length_width();
+
 #endif
-#pragma once

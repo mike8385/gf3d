@@ -9,6 +9,15 @@
 
 #include "particles.h"
 
+typedef enum
+{
+	PT_NONE = 1,
+	PT_TIMER = 2, //This is if the power needs a TTL (ex. lightning behind player)
+	PT_DISTANCE = 4 // THis is if the power needs to dissapear after distance (ex. shooting)
+
+}PowerType;
+
+
 typedef struct Power_S
 {
 	Uint8							_inuse;
@@ -22,6 +31,12 @@ typedef struct Power_S
 	GFC_Vector3D					rotation;
 	GFC_Vector3D					scale;
 	GFC_Vector3D					velocity;
+	GFC_Vector3D					spawnPos;
+	float							spawnTime;
+	float							TTL;
+
+	PowerType						powerType;
+
 
 
 	GFC_Vector3D					acceleration;

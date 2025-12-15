@@ -6,7 +6,7 @@ layout(binding = 0) uniform UniformBufferObject
     mat4    model;
     mat4    view; //Cameras Orientation + position
     mat4    proj; //Projection matrix (Persepective or orthographic)
-    vec4    viewportSize;   // add this to your UBO, what does it do?
+    vec4    viewportSize;   // Pretty sure this is the screen/resolution size
     vec4    color;
     float   size;
     float   padding;
@@ -23,10 +23,6 @@ layout(location = 0) in vec3 inPosition;
 layout(location = 0) out vec4 colorMod;
 layout(location = 1) out float outSize; //World-Space particle radius
 layout(location = 2) out vec2 outCenter; //World-Space particle radius
-
-
-
-
 
 
 void main()

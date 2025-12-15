@@ -31,6 +31,8 @@ Entity* entity_new()
 				entity_system.entity_list[i]._inuse = 1;
 				entity_system.entity_list[i].color = GFC_COLOR_WHITE;
 				entity_system.entity_list[i].scale = gfc_vector3d(1, 1, 1);
+				entity_system.entity_list[i].powered = 0;
+
 				return &entity_system.entity_list[i];
 			}
 		}
@@ -223,6 +225,24 @@ void entity_move(Entity* self)
 	if (self->move) self->move(self);
 
 	gfc_vector3d_add(self->velocity, self->velocity, self->acceleration);
+	
+	if (self->position.x > 400)
+	{
+		self->position.x = 395;
+	}
+	if (self->position.x < -400)
+	{
+		self->position.x = -395;
+	}
+
+	if (self->position.y > 400)
+	{
+		self->position.y = 395;
+	}
+	if (self->position.y < -400)
+	{
+		self->position.y = -395;
+	}
 
 	//(self->position, self->position, self->velocity);
 
@@ -279,6 +299,10 @@ void entity_check_collisions()//, World* world);
 			if (collision)
 			{
 				a->stopped = 1;
+				if (b->powered == 1)
+				{
+					a->energy += 5;
+				}
 				break;
 
 				//slog("Collision: %d, (%s <-> %s)", collision_test(a, b), a->name, b->name);

@@ -53,6 +53,7 @@ void player_attack(Entity* self);
 
 Entity* player_get_player();
 
+void player_power_drain(Entity* self);
 
 
 #endif

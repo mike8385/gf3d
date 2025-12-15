@@ -249,6 +249,12 @@
     <ClCompile Include="..\src\UI.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\electric.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\movement.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\gf2d_actor.h">
@@ -453,6 +459,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\UI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\electric.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\movement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

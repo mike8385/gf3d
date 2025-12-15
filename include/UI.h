@@ -33,7 +33,7 @@ typedef struct
 	Sprite*		health;
 	Uint32		total;
 	Uint32		MAX;
-} EnergyBar;
+} UIBar;
 
 
 
@@ -47,7 +47,10 @@ Window* window_new();
 
 Window* window_main_menu(GFC_Vector2D position, GFC_Color color, const char* filename);
 
-EnergyBar* energy_bar();
+UIBar* energy_bar();
+
+UIBar* health_bar();
+
 
 #endif
 

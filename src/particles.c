@@ -266,7 +266,7 @@ void gf3d_particle_draw(Particle* particle, GFC_Matrix4 modelMat, GFC_Color mod,
     //slog("In draw");
     if (!particle) return;
     gfc_matrix4_copy(ubo.model, modelMat);
-    gfc_matrix4_make_translation(ubo.model, particle->position);
+   // gfc_matrix4_make_translation(ubo.model, particle->position);
     gf3d_vgraphics_get_view(&ubo.view);
 
     gf3d_vgraphics_get_projection_matrix(&ubo.proj);

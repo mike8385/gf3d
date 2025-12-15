@@ -42,6 +42,7 @@ Entity* world_entity_building_spawn(GFC_Vector3D position, GFC_Color color)
 	}
 	gfc_line_cpy(self->name, "Building1");
 	self->mesh = gf3d_mesh_load_obj("models/terrain/building1.obj");
+	
 	self->texture = gf3d_texture_load("models/terrain/building1.png");
 	self->color = color;
 	self->position = position;
@@ -50,6 +51,7 @@ Entity* world_entity_building_spawn(GFC_Vector3D position, GFC_Color color)
 	data->type = BUILDING;
 	self->collidedType = CT_Building;
 	self->data = data;
+	self->powerBounds = gfc_sphere(0,0,0,0);
 
 	body = body_new();
 	if (!body)

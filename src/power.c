@@ -13,6 +13,9 @@ static PowerSystem power_system = { 0 };
 
 #define DAMPEN 0.8
 
+
+
+
 Power* power_new()
 {
 	int i;
@@ -132,7 +135,7 @@ void power_think(Power* self)
 	if (!self) return;
 
 	if (self->think) self->think(self);
-	power_move(self);
+	
 }
 
 
@@ -191,7 +194,9 @@ void power_move(Power* self)
 
 	if (self->move) self->move(self);
 
-	gfc_vector3d_add(self->position, self->position, self->velocity);
+
+
+	//gfc_vector3d_add(self->position, self->position, self->velocity);
 
 	//(self->position, self->position, self->velocity);
 
@@ -299,7 +304,7 @@ Power* power_spawn(GFC_Vector3D position, GFC_Color color)
 	//self->move = power_move;
 	//self->think = power_think;
 	//self->update = power_update;
-
+	self->TTL = 0;
 
 	self->velocity = gfc_vector3d(0, 0, 0);
 	return self;
