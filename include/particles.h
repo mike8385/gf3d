@@ -40,6 +40,7 @@ typedef struct
     Uint32              maxCount;
     GFC_Color           color;
     GFC_Vector3D        position;
+    float               size;
 
     VkBuffer            vertexBuffer;
     VkDeviceMemory      vertexBufferMemory;

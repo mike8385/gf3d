@@ -1,5 +1,23 @@
 /*
 
+Game Test Notes:
+
+Shards:
+	-Glide
+	-Missle
+	-Dash
+	-Teleport
+
+
+
+
+
+
+
+
+
+
+
 
 Vulkan: API to
 

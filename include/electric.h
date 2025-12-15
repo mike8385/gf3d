@@ -9,6 +9,10 @@
 
 Power* electric_spawn(GFC_Vector3D position, GFC_Color color);
 
+Power* electric_spawn_big(GFC_Vector3D position, GFC_Color color);
+
+Power* electric_spawn_small(GFC_Vector3D position, GFC_Color color);
+
 void electric_free(Power* self);
 
 

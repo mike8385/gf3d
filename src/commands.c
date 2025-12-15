@@ -128,5 +128,17 @@ void cmd_check_player_energy(Entity* player)
 
 void cmd_check_player_shards(Entity* player)
 {
+	Uint8 a = 0, b = 0, c = 0, d = 0;
 	slog("Player Shards: %d", player_get_shards());
+
+	if (player_get_shards() > 0) a = 1;
+	if (player_get_shards() > 1) b = 1;
+	if (player_get_shards() > 2) c = 1;
+	if (player_get_shards() > 3) d = 1;
+
+	slog("Glide: %d", a);
+	slog("Missle: %d", b);
+	slog("Dash: %d", c);
+	slog("Teleport: %d", d);
+
 }

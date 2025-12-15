@@ -205,17 +205,23 @@ void player_update(Entity* self)
 
 
 
-	if (data->canFloat == 1)
+	if (data->canFloat == 1 && gfc_input_command_down("jump") && data->shards > 0)
 	{
-		if (gfc_input_command_down("jump"))
-		{
 			self->acceleration.z = -.1;
+			Power* power = NULL;
+			power = electric_spawn_small(gfc_vector3d(self->position.x + 5, self->position.y, self->position.z - 2), GFC_COLOR_BLUE);
+			power->powerType = PT_TIMER;
 
-		}
-		else
-		{
-			self->acceleration.z = -.5;
-		}
+			Power* power2 = NULL;
+			power2 = electric_spawn_small(gfc_vector3d(self->position.x - 5, self->position.y, self->position.z - 2), GFC_COLOR_BLUE);
+			power2->powerType = PT_TIMER;
+
+		
+
+	}
+	else
+	{
+		self->acceleration.z = -.5;
 	}
 
 
@@ -251,7 +257,7 @@ void player_move(Entity* self)
 	gfc_vector3d_sub(cameraDir, self->position, data->cam->position); //Gets vector from camera to player
 	gfc_vector3d_normalize(&cameraDir); //Now its a direction arrow, where to go like position wise, points at player
 
-	if (gfc_input_command_down("run") && self->energy > 0)
+	if ((gfc_input_command_down("run") && self->energy > 0) && data->shards > 2)
 	{
 		Power* power = NULL;
 		power = electric_spawn(self->position, GFC_COLOR_BLUE);
@@ -368,6 +374,7 @@ void player_attack(Entity* self)
 	PlayerEntityData* data;
 	GFC_Vector3D end, start;
 	GFC_Vector3D forward;
+	GFC_Vector3D vertical;
 	GFC_Vector3D contact;
 	CollidedType type = CT_None;
 	Entity* hit = NULL;
@@ -418,8 +425,10 @@ void player_attack(Entity* self)
 
 		}
 
-		if (SDL_GetMouseState(&mx, &my) == SDL_BUTTON(3))
+		if (SDL_GetMouseState(&mx, &my) == SDL_BUTTON(3) && data->shards > 1)
 		{
+			Power* power;
+			float speed = 3.0;
 
 			start = self->position; //Players position
 			forward = self->forward; //Players forward direction
@@ -427,6 +436,11 @@ void player_attack(Entity* self)
 
 			gfc_vector3d_normalize(&forward); //Now its a direction arrow, where to go like position wise, points at player
 			//slog("%f, %f, %f", forward.x, forward.y, forward.z);
+
+			power = electric_spawn_big(gfc_vector3d(self->position.x, self->position.y, self->position.z + 5), GFC_COLOR_BLUE);
+			power->powerType = PT_DISTANCE;
+			if (!power) return;
+			gfc_vector3d_scale(power->velocity, forward, speed);
 
 			/*end = start + forward * 50*/
 			gfc_vector3d_scale(forward, forward, 250); //forward = forward * 50
@@ -441,11 +455,68 @@ void player_attack(Entity* self)
 				slog("Hit monster");
 				entity_free(hit);
 			}
-			//self->position = end; <-- This lets me teleport
 
 			self->energy -= 10;
 
 		}
+
+		if (gfc_input_command_down("tele") && data->shards > 3) 
+		{
+			Power* power;
+			Power* power2;
+			Power* power3;
+			float speed = 1.5;
+
+			start = self->position; //Players position
+			forward = self->forward; //Players forward direction
+			forward.z = 0;
+
+
+			gfc_vector3d_normalize(&forward); //Now its a direction arrow, where to go like position wise, points at player
+			//slog("%f, %f, %f", forward.x, forward.y, forward.z);
+
+			vertical = gfc_vector3d(0, 0, 10);
+			gfc_vector3d_normalize(&vertical);
+
+			power = electric_spawn(gfc_vector3d(self->position.x, self->position.y, self->position.z + 10), GFC_COLOR_BLUE);
+			power->powerType = PT_TIMER;
+			if (!power) return;
+			gfc_vector3d_scale(power->velocity, vertical, speed);
+			power2 = electric_spawn(gfc_vector3d(self->position.x, self->position.y, self->position.z + 5), GFC_COLOR_BLUE);
+			power2->powerType = PT_TIMER;
+			if (!power2) return;
+			gfc_vector3d_scale(power2->velocity, vertical, speed);
+			power3 = electric_spawn(gfc_vector3d(self->position.x, self->position.y, self->position.z + 10), GFC_COLOR_BLUE);
+			power3->powerType = PT_TIMER;
+			if (!power3) return;
+			gfc_vector3d_scale(power3->velocity, vertical, speed);
+
+			//power->velocity = forward;
+
+
+			/*end = start + forward * 50*/
+			gfc_vector3d_scale(forward, forward, 50); //forward = forward * 50
+			gfc_vector3d_add(end, start, forward);
+
+			self->position = end; //<-- This lets me teleport
+			power = electric_spawn(gfc_vector3d(self->position.x, self->position.y, self->position.z + 10), GFC_COLOR_BLUE);
+			power->powerType = PT_TIMER;
+			if (!power) return;
+			gfc_vector3d_scale(power->velocity, -vertical, speed);
+			power2 = electric_spawn(gfc_vector3d(self->position.x, self->position.y, self->position.z + 5), GFC_COLOR_BLUE);
+			power2->powerType = PT_TIMER;
+			if (!power2) return;
+			gfc_vector3d_scale(power2->velocity, -vertical, speed);
+			power3 = electric_spawn(gfc_vector3d(self->position.x, self->position.y, self->position.z + 10), GFC_COLOR_BLUE);
+			power3->powerType = PT_TIMER;
+			if (!power3) return;
+			gfc_vector3d_scale(power3->velocity, -vertical, speed);
+
+			self->energy -= 25;
+
+		}
+
+
 	}
 	else
 	{
@@ -474,7 +545,7 @@ void player_attack(Entity* self)
 				slog("Hit monster");
 				entity_free(hit);
 			}
-			//self->position = end; <-- This lets me teleport
+
 
 
 		}
@@ -510,7 +581,11 @@ void player_power_drain(Entity* self)
 
 Entity* player_get_player()
 {
-	if (!player_system.playerData) return;
+	if (!player_system.playerData)
+	{
+		slog("No player found");
+		return NULL;
+	}
 
 	return player_system.playerData;
 }

@@ -116,6 +116,8 @@ Particle* gf3d_particle_new()
     {
         if (particle_manager.particle_list[i]._inuse)continue;
         particle_manager.particle_list[i]._inuse = 1;
+        particle_manager.particle_list[i]._refCount = 1;
+
         return &particle_manager.particle_list[i];
     }
     slog("gf3d_particle_new: no free slots for new particlees");
@@ -178,6 +180,7 @@ Particle* gf3d_particle_load2(GFC_Vector3D position)
     }
 
     particle->position = position;
+    particle->size = 5.0f;
 
     gf3d_particle_create_vertex_buffer(particle);
     slog("loaded Particle");
@@ -279,7 +282,9 @@ void gf3d_particle_draw(Particle* particle, GFC_Matrix4 modelMat, GFC_Color mod,
     ubo.color = gfc_color_to_vector4f(mod);
     //slog("Red: %f, Green: %f, Blue: %f, Alpha: %f, ", ubo.color.x, ubo.color.y, ubo.color.z, ubo.color.w);
 
-    ubo.size = 5.0f;   // not 0.1
+    ubo.size = particle->size;   // not 0.1
+
+
     //slog("Size: %f", ubo.size);
     ubo.padding = 0.0f;
 

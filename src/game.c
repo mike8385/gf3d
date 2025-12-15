@@ -121,8 +121,8 @@ int main(int argc,char *argv[])
 
 
     world = world_load("def/cityTerrain.json");
-    monster = monster_spawn(gfc_vector3d(5, -15, 10), GFC_COLOR_WHITE);
-    player = player_spawn(gfc_vector3d(0, 0, 10), GFC_COLOR_PINK);
+    //monster = monster_spawn(gfc_vector3d(5, -15, 10), GFC_COLOR_WHITE);
+    //player = player_spawn(gfc_vector3d(0, 0, 10), GFC_COLOR_PINK);
     //world_entity_building_spawn(gfc_vector3d(50, 50, 0), GFC_COLOR_RED);
     //cube = gf3d_mesh_load_obj("models/box.obj");
     //power = power_spawn(gfc_vector3d(0, 75, 25), GFC_COLOR_PINK);
@@ -139,7 +139,7 @@ int main(int argc,char *argv[])
     //printf("sizeof(GFC_Vector4D) = %zu\n", sizeof(GFC_Vector4D));
     //printf("sizeof(MeshUBO) = %zu\n", sizeof(MeshUBO));
     //particle = gf3d_particle_new();
-    camera_entity_spawn(cam, player);
+    /*camera_entity_spawn(cam, player);*/
 
     //
 

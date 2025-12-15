@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "simple_logger.h"
 #include "simple_json.h"
 #include "gf3d_obj_load.h"
@@ -11,6 +13,9 @@
 #include "entity.h"
 #include "world_entity.h"
 #include "shards.h"
+#include "player.h"
+#include "monster.h"
+#include "camera_entity.h"
 
 
 typedef struct
@@ -129,9 +134,15 @@ Uint8 world_building_collision_test(World* world, GFC_Vector3D start, GFC_Vector
 World* world_load(const char* filename)
 {
 	World* world = NULL;
+	
+
 	//Space* space;
 	const char* str = NULL;
+	float l = 0, w = 0;
 	SJson* json = NULL, *config = NULL;
+	SJson* shards;
+	SJson* worldEntitiesArray;
+	SJson* enemies;
 	json = sj_load(filename);
 	if (!json)
 	{
@@ -153,6 +164,11 @@ World* world_load(const char* filename)
 		world_free(world);
 		return NULL;
 	}
+
+	str = sj_object_get_string(config, "name");
+	if (!str) gfc_line_cpy(str, "NoWorldName");
+	gfc_line_cpy(world->name, str);
+
 	str = sj_object_get_string(config, "terrainMesh");
 	if (!str)
 	{
@@ -175,29 +191,99 @@ World* world_load(const char* filename)
 	{
 		slog("No world texture added, assigning default");
 	}
+
 	//slog("Terrain texture: %s", world->texture->filename);
-	world->lightColor = GFC_COLOR_WHITE;
-	world->lightPos = gfc_vector3d(0,0,50);
+	GFC_Color lightColor = { 0 };
+	lightColor = sj_object_get_color(config, "lightColor");
+	world->lightColor = lightColor;
+
+	GFC_Vector3D lightPos = { 0 };
+	sj_object_get_vector3d(config, "lightPos", &lightPos);
+	world->lightPos = lightPos;
+
+	sj_object_get_float(config, "length", &l);
+	world->length = l;
+	sj_object_get_float(config, "width", &w);
+	world->width = w;
+
 	//space = space_new();
 	//space_set_iterations(space, 5);
 	//world->space = space;
-	gfc_line_cpy(world->name, "World");
+	
 
 	//If everything works, save world data then spawn in game entities
 	theWorld = world;
-	world_entity_building_spawn(gfc_vector3d(-200,100,0), GFC_COLOR_RED);
-	world_entity_building_spawn(gfc_vector3d(250, 223, 0), GFC_COLOR_RED);
 
-	world_entity_lamp_spawn(gfc_vector3d(-40, -163, 0), GFC_COLOR_YELLOW);
-	world_entity_lamp_spawn(gfc_vector3d(-165, -63, 0), GFC_COLOR_YELLOW);
+	//World Entity Spawn:
+	worldEntitiesArray = sj_object_get_value(json, "worldEntities");
+	int arrayIndex = sj_array_get_count(worldEntitiesArray);
 
-	shard_spawn(gfc_vector3d(64.266083, 137.529709, 0.000000), GFC_COLOR_LIGHTBLUE);
+	for (int i = 0; i < arrayIndex; i++)
+	{
+		SJson* worldEntities = sj_array_get_nth(worldEntitiesArray, i);
+		const char* type = sj_object_get_value_as_string(worldEntities, "type");
+		GFC_Vector3D wEntPos = { 0 };
+		GFC_Color wEntColor = { 0 };
+		sj_object_get_vector3d(worldEntities, "position", &wEntPos);
+		wEntColor = sj_object_get_color(worldEntities, "color");
 
+		if (strcmp(type, "building") == 0)
+		{
+			world_entity_building_spawn(wEntPos, wEntColor);
+		}
+		else if (strcmp(type, "lamp") == 0)
+		{
+			world_entity_lamp_spawn(wEntPos, wEntColor);
+		}
+	}
 
-	//sj_object_get_color_value(config, "lightColor", &world->lightColor);
-	//sj_object_get_vector3d(config, "lightPos", &world->lightPos);
-	world->length = 400;
-	world->width = 400;
+	//Shard Spawn:
+	SJson* shardsArray = sj_object_get_value(json, "shards");
+	int shardsArrayIndex = sj_array_get_count(shardsArray);
+
+	for (int i = 0; i < shardsArrayIndex; i++)
+	{
+		SJson* shards = sj_array_get_nth(shardsArray, i);
+		GFC_Vector3D shardPos = { 0 };
+		GFC_Color shardColor = { 0 };
+		sj_object_get_vector3d(shards, "position", &shardPos);
+		shardColor = sj_object_get_color(shards, "color");
+		shard_spawn(shardPos, shardColor);
+	}
+
+	//Entity Spawn:
+	SJson* entitiesArray = sj_object_get_value(json, "entities");
+	int entityArrayIndex = sj_array_get_count(entitiesArray);
+
+	for (int i = 0; i < entityArrayIndex; i++)
+	{
+		SJson* entities = sj_array_get_nth(entitiesArray, i);
+		const char* type = sj_object_get_value_as_string(entities, "type");
+		GFC_Vector3D entPos = { 0 };
+		GFC_Color entColor = { 0 };
+		sj_object_get_vector3d(entities, "position", &entPos);
+		entColor = sj_object_get_color(entities, "color");
+		if (!&entColor)
+		{
+			entColor = gfc_color(255, 255, 255, 255);
+		}
+
+		if (strcmp(type, "player") == 0)
+		{
+			player_spawn(entPos, entColor);
+		}
+		else if (strcmp(type, "monster") == 0)
+		{
+			monster_spawn(entPos, entColor);
+		}
+		else if (strcmp(type, "camera") == 0)
+		{
+			camera_entity_spawn(entPos, player_get_player());
+		}
+	}
+
+	slog("%s, %f, %f", world->name, world->length, world->width);
+
 	slog("Successfully built world");
 	sj_free(json);
 	return world;

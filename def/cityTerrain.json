@@ -1,8 +1,71 @@
 {
   "world": 
   {
+    "name": "world1",
     "terrainMesh": "models/terrain/cityTerrain2.obj",
-    "terrainTexture": "models/terrain/cityTerrain_skin.png"
-  }
+    "terrainTexture": "models/terrain/cityTerrain_skin.png",
+    "lightColor": [255,255,255,255],
+    "lightPos": [0,0,50],
+    "length": 400,
+    "width" : 400
+  },
+  "worldEntities": 
+  [
+    {
+      "type": "building",
+      "position": [-200,100,0],
+      "color": [255,0,0,255]
+    },
+    {
+      "type": "building",
+      "position": [ 250, 223, 0 ],
+      "color": [ 2, 255, 0, 255 ]
+    },
+    {
+      "type": "lamp",
+      "position": [ -40, -163, 0 ],
+      "color": [ 255, 255, 0, 255 ]
+    },
+    {
+      "type": "lamp",
+      "position": [ -165, -63, 0 ],
+      "color": [ 255, 255, 0, 255 ]
+    }
+  ],
+  "shards": 
+  [
+    {
+      "position": [ 64.266083, 137.529709, 0.000000 ],
+      "color": [ 128, 153, 255, 255 ]
+    },
+    {
+      "position": [ -241.876709, 89.056099, 102.044441 ],
+      "color": [ 128, 153, 255, 255 ]
+    },
+    {
+      "position": [ -37.104649, -161.275299, 66.393600 ],
+      "color": [ 128, 153, 255, 255 ]
+    },
+    {
+      "position": [ 374.900421, 184.996567, 0.000000 ],
+      "color": [ 128, 153, 255, 255 ]
+    }
 
+  ],
+  "entities": [
+    {
+      "type": "player",
+      "position": [ 0,0,10 ],
+      "color": [ 255, 105, 180, 255 ]
+    },
+    {
+      "type": "monster",
+      "position": [ 5, -15, 10 ],
+      "color": [ 255, 255, 255, 255 ]
+    },
+    {
+      "type": "camera",
+      "position": [ 0, 75, 25 ]
+    }
+  ]
 }
