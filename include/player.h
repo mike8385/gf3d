@@ -14,6 +14,9 @@
 */
 Entity* player_spawn(GFC_Vector3D position, GFC_Color color);
 
+Entity* player_spawn_json(const char* filename);
+
+
 /*
 * @brief The think function for the player
 * @param self - the player entity itself

@@ -183,7 +183,7 @@ Particle* gf3d_particle_load2(GFC_Vector3D position)
     particle->size = 5.0f;
 
     gf3d_particle_create_vertex_buffer(particle);
-    slog("loaded Particle");
+    //slog("loaded Particle");
     return particle;
 }
 

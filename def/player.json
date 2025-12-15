@@ -1,0 +1,147 @@
+{
+  "player": 
+  {
+    "name": "player",
+    "mesh": "models/character/character.obj",
+    "texture": "models/dino/dino.png",
+    "color": [ 255, 105, 180, 255 ],
+    "position": [ 0, 0, 10 ],
+    "maxHealth": 100,
+    "maxEnergy": 100,
+    "bounds": [ -7, -7, 0, 14, 14, 14 ],
+    "floorBounds": [ -7, -7, -0.5, 14, 1, 14 ],
+    "drawoffset": [0,0,0],
+    "drawShadow": 1,
+    "collidedType": "CT_Player",
+    "canFloat": 0,
+    "hasMissle": 0,
+    "shards": 0
+  },
+  "animation": 
+  [
+    {
+      "frame": 0,
+      "filename": "models/dino/dino_ani0001.obj"
+    },
+    {
+      "frame": 1,
+      "filename": "models/dino/dino_ani0001.obj"
+    },
+    {
+      "frame": 2,
+      "filename": "models/dino/dino_ani0002.obj"
+    },
+    {
+      "frame": 3,
+      "filename": "models/dino/dino_ani0003.obj"
+    },
+    {
+      "frame": 4,
+      "filename": "models/dino/dino_ani0004.obj"
+    },
+    {
+      "frame": 5,
+      "filename": "models/dino/dino_ani0005.obj"
+    },
+    {
+      "frame": 6,
+      "filename": "models/dino/dino_ani0006.obj"
+    },
+    {
+      "frame": 7,
+      "filename": "models/dino/dino_ani0007.obj"
+    },
+    {
+      "frame": 8,
+      "filename": "models/dino/dino_ani0008.obj"
+    },
+    {
+      "frame": 9,
+      "filename": "models/dino/dino_ani0009.obj"
+    },
+    {
+      "frame": 10,
+      "filename": "models/dino/dino_ani0010.obj"
+    },
+    {
+      "frame": 11,
+      "filename": "models/dino/dino_ani0011.obj"
+    },
+    {
+      "frame": 12,
+      "filename": "models/dino/dino_ani0012.obj"
+    },
+    {
+      "frame": 13,
+      "filename": "models/dino/dino_ani0013.obj"
+    },
+    {
+      "frame": 14,
+      "filename": "models/dino/dino_ani0014.obj"
+    },
+    {
+      "frame": 15,
+      "filename": "models/dino/dino_ani0015.obj"
+    },
+    {
+      "frame": 16,
+      "filename": "models/dino/dino_ani0016.obj"
+    },
+    {
+      "frame": 17,
+      "filename": "models/dino/dino_ani0017.obj"
+    },
+    {
+      "frame": 18,
+      "filename": "models/dino/dino_ani0018.obj"
+    },
+    {
+      "frame": 19,
+      "filename": "models/dino/dino_ani0019.obj"
+    },
+    {
+      "frame": 20,
+      "filename": "models/dino/dino_ani0020.obj"
+    },
+    {
+      "frame": 21,
+      "filename": "models/dino/dino_ani0021.obj"
+    },
+    {
+      "frame": 22,
+      "filename": "models/dino/dino_ani0022.obj"
+    },
+    {
+      "frame": 23,
+      "filename": "models/dino/dino_ani0023.obj"
+    },
+    {
+      "frame": 24,
+      "filename": "models/dino/dino_ani0024.obj"
+    },
+    {
+      "frame": 25,
+      "filename": "models/dino/dino_ani0025.obj"
+    },
+    {
+      "frame": 26,
+      "filename": "models/dino/dino_ani0026.obj"
+    },
+    {
+      "frame": 27,
+      "filename": "models/dino/dino_ani0027.obj"
+    },
+    {
+      "frame": 28,
+      "filename": "models/dino/dino_ani0028.obj"
+    },
+    {
+      "frame": 29,
+      "filename": "models/dino/dino_ani0029.obj"
+    },
+    {
+      "frame": 30,
+      "filename": "models/dino/dino_ani0030.obj"
+    }
+  ]
+}

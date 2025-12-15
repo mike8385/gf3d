@@ -22,6 +22,8 @@ typedef enum
 	CT_MAX = 64
 }CollidedType;
 
+CollidedType string_to_collision_type(const char* typeStr);
+
 
 typedef struct Entity_S
 {
@@ -78,10 +80,14 @@ typedef struct Entity_S
 	//Animations
 	Uint32			totalFrames;
 	Uint32			currentFrame;
-	Mesh*			meshList;
+	GFC_List*			meshList;
+	float			lastAnimateTime;
+	float			currentTime;
+
 
 
 }Entity;
+
 
 
 /*

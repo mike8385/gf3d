@@ -177,7 +177,6 @@ World* world_load(const char* filename)
 		world_free(world);
 		sj_free(str);
 		return NULL;
-
 	}
 	world->terrain = gf3d_mesh_load_obj(str);
 	if (!world->terrain)
@@ -270,7 +269,8 @@ World* world_load(const char* filename)
 
 		if (strcmp(type, "player") == 0)
 		{
-			player_spawn(entPos, entColor);
+			//player_spawn(entPos, entColor);
+			player_spawn_json("def/player.json");
 		}
 		else if (strcmp(type, "monster") == 0)
 		{

@@ -16,6 +16,21 @@ typedef struct
 
 static EntitySystem entity_system = { 0 };
 
+
+CollidedType string_to_collision_type(const char* typeStr) {
+	if (!typeStr) return CT_None; // Default
+
+	if (strcmp(typeStr, "CT_Player") == 0) return CT_Player;
+	if (strcmp(typeStr, "CT_Monster") == 0) return CT_Monster;
+	if (strcmp(typeStr, "CT_Building") == 0) return CT_Building;
+	if (strcmp(typeStr, "CT_Power") == 0) return CT_Power;
+	if (strcmp(typeStr, "CT_Shard") == 0) return CT_Shard;
+	if (strcmp(typeStr, "CT_MAX") == 0) return CT_MAX;
+
+	slog("Unknown collision type: %s", typeStr);
+	return CT_None; // Default fallback
+}
+
 #define DAMPEN 0.8
 
 Entity* entity_new()
@@ -28,12 +43,21 @@ Entity* entity_new()
 			if (!entity_system.entity_list[i]._inuse)
 			{
 				memset(&entity_system.entity_list[i], 0, sizeof(Entity));   //clears ALL garbage memory
+
 				entity_system.entity_list[i]._inuse = 1;
 				entity_system.entity_list[i].color = GFC_COLOR_WHITE;
 				entity_system.entity_list[i].scale = gfc_vector3d(1, 1, 1);
 				entity_system.entity_list[i].powered = 0;
+				entity_system.entity_list[i].totalFrames = 0;
+				
+
 
 				return &entity_system.entity_list[i];
+
+				//Animations
+				Uint32			totalFrames;
+				Uint32			currentFrame;
+				Mesh* meshList;
 			}
 		}
 	}

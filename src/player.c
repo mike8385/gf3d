@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "simple_logger.h"
 
 #include "player.h"
@@ -6,6 +8,7 @@
 
 #include "gfc_input.h"
 #include "gf3d_obj_load.h"
+#include "gfc_config.h"
 #include "gfc_primitives.h"
 #include "electric.h"
 
@@ -37,6 +40,169 @@ typedef struct
 
 static PlayerSystem player_system = { 0 }; /**<Initalize a LOCAL global entity manager*/
 
+Entity* player_spawn_json(const char* filename)
+{
+
+	Entity* self = NULL;
+	PlayerEntityData* data = NULL;
+	const char* str = NULL;
+	SJson* json = NULL, * config = NULL;
+	GFC_Color color = { 0 };
+	GFC_Vector3D position = { 0 };
+	GFC_Vector3D drawOffset = { 0 };
+	Uint8 f, m;
+	Uint32 s;
+
+	json = sj_load(filename);
+	if (!json)
+	{
+		slog("Couldnt find player filename % s", filename);
+		return NULL;
+	}
+	self = entity_new();
+	if (!self)
+	{
+		slog("Failed to allocate a world for %s", filename);
+		sj_free(json);
+		return NULL;
+	}
+
+	config = sj_object_get_value(json, "player");
+	if (!config)
+	{
+		slog("Failed to parse a player");
+		sj_free(json);
+		entity_free(self);
+		return NULL;
+	}
+
+	str = sj_object_get_string(config, "name");
+	if (!str) gfc_line_cpy(str, "NoPlayerName");
+	gfc_line_cpy(self->name, str);
+
+	str = sj_object_get_string(config, "mesh");
+	if (!str)
+	{
+		slog("Failed to get string mesh");
+		sj_free(json);
+		entity_free(self);
+		sj_free(str);
+		return NULL;
+	}
+	self->mesh = gf3d_mesh_load_obj(str);
+
+	self->texture = gf3d_texture_load(sj_object_get_string(config, "texture"));
+	if (!self->texture)
+	{
+		slog("No player texture added, assigning default");
+	}
+	
+	color = sj_object_get_color(config, "color");
+	self->color = color;
+	if (!&self->color) self->color = gfc_color(255, 255, 255, 255);
+
+	sj_object_get_vector3d(config, "position", &position);
+	self->position = position;
+	self->newPos = gfc_vector3d(self->position.x,
+		self->position.y,
+		self->position.z);
+
+	self->acceleration = gfc_vector3d(0, 0, 0);
+	self->rotation = gfc_vector3d(0, 0, 0);
+	self->velocity = gfc_vector3d(0, 0, 0);
+
+	//Health & Energy Info
+
+	sj_object_get_float(config, "maxHealth", &self->maxHealth);
+	sj_object_get_float(config, "maxEnergy", &self->maxEnergy);
+	self->health = self->maxHealth;
+	self->energy = self->maxEnergy;
+
+	//Bounds:
+	self->bounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z, 14, 14, 14);
+	self->floorBounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z - 0.5, 14, 1, 14);
+	sj_object_get_vector3d(config, "drawOffset", &drawOffset);
+	self->drawOffset = drawOffset;
+
+	sj_object_get_uint8(config, "drawShadow", &self->drawShadow);
+
+
+	//Data Info
+	data = gfc_allocate_array(sizeof(PlayerEntityData), 1);
+	self->data = data;
+
+	sj_object_get_uint8(config, "canFloat", &f);
+	sj_object_get_uint8(config, "hasMissle", &m);
+	sj_object_get_uint32(config, "shards", &s);
+
+	data->canFloat = f;
+	data->hasMissle = m;
+	data->shards = s;
+
+	str = sj_object_get_string(config, "collidedType");
+	self->collidedType = string_to_collision_type(str);
+
+	//Extra Info
+	self->bounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z, 14, 14, 14);
+	self->floorBounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z - 0.5, 14, 1, 14);
+	//self->drawOffset = gfc_vector3d(0, 0, 6);
+	self->think = player_think;
+	self->free = player_free;
+	self->update = player_update;
+
+	entity_get_floor_pos(self, world_get_the(), &self->position);
+
+	self->doGenericUpdate = 1;
+	self->justSpawned = 1;
+	self->canJump = 1;
+	self->onGround = 1;
+	//self->collidedType = CT_Player;
+	self->stopped = 0;
+	self->forward = gfc_vector3d(0, 1, 0);
+	self->newPos = gfc_vector3d(self->position.x, self->position.y, self->position.z);
+
+	//Animation?
+
+
+	SJson* animationArray = sj_object_get_value(json, "animation");
+
+	self->meshList = NULL;
+	self->totalFrames = 0;
+	self->currentFrame = 0;
+
+	//if (animationArray)
+	//{
+	//	int count = sj_array_count(animationArray);
+
+	//	self->totalFrames = count;
+
+	//	self->meshList = gfc_list_new();
+
+
+	//	for (int i = 0; i < 5; i++)
+	//	{
+	//		SJson* animation = sj_array_get_nth(animationArray, i);
+	//		int frame = 0;
+	//		sj_object_get_int(animation, "frame", &frame);
+	//		str = sj_object_get_string(animation, "filename");
+	//		slog("Frame: %d, Filename: %s", frame, str);
+	//		Mesh* frameMesh = gf3d_mesh_load_obj(str);
+	//		gfc_list_append(self->meshList, frameMesh);
+
+	//	}
+	//}
+
+
+	//self->lastAnimateTime = SDL_GetTicks();
+
+	player_system.playerData = self;
+
+	sj_free(json);
+
+	return self;
+}
+
+
 Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 {
 	Space* space = NULL;
@@ -47,7 +213,7 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 	if (!self) return NULL;
 	//Basic Important Stuff
 	gfc_line_cpy(self->name, "notAugmon");
-	self->mesh = gf3d_mesh_load_obj("models/dino/dino.obj");
+	self->mesh = gf3d_mesh_load_obj("models/dino/dino_skin.obj");
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->color = color;
 	self->position = position;
@@ -74,10 +240,6 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 	self->health = self->maxHealth;
 	self->energy = self->maxEnergy;
 
-	//Extra Info
-	self->bounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z, 14, 14, 14);
-	self->floorBounds = gfc_box(self->position.x - 7, self->position.y - 7, self->position.z - 0.5, 14, 1, 14);
-	self->drawOffset = gfc_vector3d(0, 0, 6);
 	self->drawShadow = 1;
 	self->think = player_think;
 	self->free = player_free; 
@@ -167,6 +329,7 @@ void player_think(Entity* self)
 	{
 		self->energy = self->maxEnergy;
 	}
+	//self->currentFrame++;
 	//player_power_drain(self);
 	//slog("Player Bounds: %f,%f,%f,%f,%f,%f", self->bounds.x, self->bounds.y, self->bounds.z, self->bounds.w, self->bounds.h, self->bounds.d);
 }
@@ -240,6 +403,23 @@ void player_update(Entity* self)
 	//	self->position.z = position.z;// +5;
 
 	//}
+
+if (self->meshList && self->totalFrames > 0)
+{
+    Uint32 now = SDL_GetTicks();
+    if (now - self->lastAnimateTime > 100)
+    {
+        self->currentFrame++;
+        self->lastAnimateTime = now;
+    }
+
+    if (self->currentFrame >= self->totalFrames)
+    {
+        self->currentFrame = 0;
+    }
+
+    self->mesh = gfc_list_get_nth(self->meshList, self->currentFrame);
+}
 
 
 }
