@@ -10,7 +10,7 @@
 #include "gf3d_mesh.h"
 #include "entity.h"
 #include "world_entity.h"
-
+#include "shards.h"
 
 
 typedef struct
@@ -190,6 +190,8 @@ World* world_load(const char* filename)
 
 	world_entity_lamp_spawn(gfc_vector3d(-40, -163, 0), GFC_COLOR_YELLOW);
 	world_entity_lamp_spawn(gfc_vector3d(-165, -63, 0), GFC_COLOR_YELLOW);
+
+	shard_spawn(gfc_vector3d(64.266083, 137.529709, 0.000000), GFC_COLOR_LIGHTBLUE);
 
 
 	//sj_object_get_color_value(config, "lightColor", &world->lightColor);

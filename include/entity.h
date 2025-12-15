@@ -18,7 +18,8 @@ typedef enum
 	CT_Monster = 4,
 	CT_Building = 8,
 	CT_Power = 16,
-	CT_MAX = 32
+	CT_Shard = 32,
+	CT_MAX = 64
 }CollidedType;
 
 

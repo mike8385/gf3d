@@ -42,7 +42,7 @@ void power_free(Power* ent)
 {
 	if (!ent) return;
 	if (ent->free)ent->free(ent);
-	//particle_free(ent->particle);
+	gf3d_particle_free(ent->particle);
 	gf3d_texture_free(ent->texture);
 	memset(ent, 0, sizeof(Power));
 }

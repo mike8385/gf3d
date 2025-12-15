@@ -36,6 +36,8 @@ void cmd_check_player_health(Entity* player);
 
 void cmd_check_player_energy(Entity* player);
 
+void cmd_check_player_shards(player);
+
 #endif
 
 

@@ -55,5 +55,9 @@ Entity* player_get_player();
 
 void player_power_drain(Entity* self);
 
+void player_add_shard();
+
+Uint32 player_get_shards();
+
 
 #endif

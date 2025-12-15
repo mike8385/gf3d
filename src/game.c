@@ -29,6 +29,7 @@
 #include "space.h"
 #include "particles.h"
 #include "power.h"
+#include "shards.h"
 
 #include "camera_entity.h"
 #include "gf3d_camera.h"
@@ -95,6 +96,7 @@ int main(int argc,char *argv[])
     
     entity_system_init(8000);
     power_system_init(1024);
+    shard_system_init(1024);
     //game init
     srand(SDL_GetTicks());
     slog_sync();
@@ -153,15 +155,18 @@ int main(int argc,char *argv[])
         gfc_matrix4_rotate_z(dinoM, id, theta);
         entity_system_think_all();
         power_system_think_all();
+        //shard_system_think_all();
         //space_run(space);
 
         entity_system_move_all();
         power_system_move_all();
 
         entity_check_collisions();//, World* world);
+        shard_check_collisions();
 
         entity_system_update_all();
-        power_system_update_all();
+        //power_system_update_all();
+        //shard_system_update_all();
 
         //update_space(world)
         
@@ -176,6 +181,7 @@ int main(int argc,char *argv[])
                 ////gf3d_wire_draw(cube,);
                 entity_system_draw_all(lightPos, GFC_COLOR_RED); //Change id to dinoM
                 power_system_draw_all(lightPos, GFC_COLOR_BLUE);
+                shard_system_draw_all(lightPos, GFC_COLOR_GREEN);
 
                 //Particle Draw
                 //gf3d_particle_draw(particle, modelMat, GFC_COLOR_BLUE, NULL);

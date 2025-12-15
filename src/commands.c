@@ -80,6 +80,17 @@ void cmds()
 		slog("Reset players energy");
 	}
 
+	if (gfc_input_key_pressed("7"))
+	{
+		if (!player)
+		{
+			slog("No player");
+			return;
+		}
+
+		cmd_check_player_shards(player);
+	}
+
 
 }
 
@@ -115,3 +126,7 @@ void cmd_check_player_energy(Entity* player)
 
 }
 
+void cmd_check_player_shards(Entity* player)
+{
+	slog("Player Shards: %d", player_get_shards());
+}

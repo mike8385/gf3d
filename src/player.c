@@ -67,6 +67,7 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color)
 	data->hasMissle = 0;
 	data->shards = 0;
 
+
 	//Health & Energy Info
 	self->maxHealth = 100;
 	self->maxEnergy = 100;
@@ -514,4 +515,27 @@ Entity* player_get_player()
 	return player_system.playerData;
 }
 
+void player_add_shard()
+{
+	Entity* player = player_system.playerData;
+	if (!player) return;
+	
+	PlayerEntityData* data;
+	data = player->data;
+	if (!data) return;
+
+	data->shards++;
+}
+
+Uint32 player_get_shards()
+{
+	Entity* player = player_system.playerData;
+	if (!player) return;
+
+	PlayerEntityData* data;
+	data = player->data;
+	if (!data) return;
+
+	return data->shards;
+}
 
