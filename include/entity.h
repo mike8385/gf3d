@@ -116,7 +116,6 @@ void entity_system_init(Uint32 max_ents);
 */
 void entity_system_draw_all(GFC_Vector3D lightPos, GFC_Color lightColor);
 
-
 void entity_system_think_all();
 
 void entity_system_update_all();

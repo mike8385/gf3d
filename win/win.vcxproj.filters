@@ -255,6 +255,18 @@
     <ClCompile Include="..\src\movement.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\animate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\menu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\shards.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\window.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\gf2d_actor.h">
@@ -467,6 +479,18 @@
     <ClInclude Include="..\include\movement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\animate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\shards.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\images\bg_flat.png">
@@ -644,6 +668,9 @@
     </None>
     <None Include="..\shaders\wire.vert">
       <Filter>shaders</Filter>
+    </None>
+    <None Include="..\def\player.json">
+      <Filter>def</Filter>
     </None>
   </ItemGroup>
 </Project>

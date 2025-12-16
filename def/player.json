@@ -2,7 +2,7 @@
   "player": 
   {
     "name": "player",
-    "mesh": "models/character/character.obj",
+    "mesh": "models/dino/dino_skin.obj",
     "texture": "models/dino/dino.png",
     "color": [ 255, 105, 180, 255 ],
     "position": [ 0, 0, 10 ],

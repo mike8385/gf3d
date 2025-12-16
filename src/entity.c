@@ -173,6 +173,21 @@ void entity_system_draw_all(GFC_Vector3D lightPos, GFC_Color lightColor)
 	}
 }
 
+void entity_system_free_all()
+{
+	int i;
+	for (i = 0; i < entity_system.entity_max; i++)
+	{
+		if (entity_system.entity_list[i]._inuse)
+		{
+			entity_free(&entity_system.entity_list[i]);
+		}
+	}
+}
+
+
+
+
 void entity_think(Entity* ent)
 {
 	if (!ent) return;
